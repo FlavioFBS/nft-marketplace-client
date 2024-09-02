@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Style from '../styles/index.module.css';
-import { BigNFTSlider, HeroSection, Service } from '@/components/ComponentIndex';
+import { BigNFTSlider, HeroSection, Service, Subscribe } from '@/components/ComponentIndex';
 
 
 const Home = () => {
@@ -11,6 +11,7 @@ const Home = () => {
       <HeroSection />
       <Service />
       <BigNFTSlider />
+      <Subscribe />
     </div>
   )
 }

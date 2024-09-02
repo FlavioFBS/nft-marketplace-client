@@ -4,6 +4,7 @@ import NavBar from './NavBar/NavBar';
 import HeroSection from './HeroSection/HeroSection';
 import Service from './Service/Service';
 import BigNFTSlider from './BigNFTSlider/BigNFTSlider';
+import Subscribe from './Subscribe/Subscribe';
 
 export {
     Button,
@@ -12,4 +13,5 @@ export {
     HeroSection,
     Service,
     BigNFTSlider,
+    Subscribe,
 }
