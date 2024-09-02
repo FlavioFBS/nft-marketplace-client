@@ -33,6 +33,11 @@
         grid-template-columns: 1fr;
         gap: 4rem;
     }
+
+    .heroSection_box_right{
+        display: flex;
+        justify-content: center;
+    }
     
     .heroSection_box_left{
         padding-right: 2rem;
