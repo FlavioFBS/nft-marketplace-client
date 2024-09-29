@@ -10,6 +10,7 @@ import { BigNFTSlider,
   Title,
   NFTCard,
   Collection,
+  FollowerTab,
 } from '@/components/ComponentIndex';
 
 
@@ -20,10 +21,7 @@ const Home = () => {
       <HeroSection />
       <Service />
       <BigNFTSlider />
-      <Title
-        heading='New Collection'
-        paragraph='Discover the most outstanding NFTs in all topics of life'
-      />
+      <FollowerTab />
       <Collection />
       <Title
         heading='Featured NFTs'
