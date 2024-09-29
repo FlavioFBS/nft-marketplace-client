@@ -19,8 +19,17 @@
 }
 
 .category_box_img{
-    max-height: 150px;
-    max-width: 100%;
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.category_box_img_img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
 }
 
 .category_box_title{

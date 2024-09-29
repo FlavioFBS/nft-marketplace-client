@@ -6,19 +6,22 @@ import Style from './Category.module.css';
 import images from '@/img';
 
 const Category = () => {
-    const CategoryArray = [1, 2, 3, 4, 5,6];
+    const CategoryArray = [1, 2, 3, 4, 5, 6];
 
     return (
         <div className={Style.box_category}>
             <div className={Style.category}>
                 {CategoryArray.map((el, i) => (
                     <div key={i + 1} className={Style.category_box}>
-                        <Image
-                            src={images.creatorbackground1}
-                            className={Style.category_box_img}
-                            alt='Background image'
-                            objectFit='cover'
-                        />
+                        <div className={Style.category_box_img}>
+                            <Image
+                                src={images.creatorbackground1}
+                                className={Style.category_box_img_img}
+                                fill
+                                sizes='100vw'
+                                alt='Background image'
+                            />
+                        </div>
 
                         <div className={Style.category_box_title}>
                             <span>
