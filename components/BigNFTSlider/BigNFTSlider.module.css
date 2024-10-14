@@ -159,8 +159,8 @@
 
 .bigNFTSlider_box_right_box_like{
     position: absolute;
-    top: 3rem;
-    right: 3rem;
+    top: 1rem;
+    right: 1rem;
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -171,6 +171,22 @@
     border-radius: 5rem;
 }
 
+@media screen and (max-width: 540px) {
+    .bigNFTSlider_box_left{
+        width: 95%;
+        margin: auto;
+    }
+
+    .bigNFTSlider_box_right{
+        margin: 0 auto;
+        max-width: 330px;
+        max-height: 430px;
+    }
+
+    .bigNFTSlider_box_right_box_img{
+        max-height: 400px;
+    }
+}
 
 @media screen and (max-width: 65em) {
     .bigNFTSlider_box{

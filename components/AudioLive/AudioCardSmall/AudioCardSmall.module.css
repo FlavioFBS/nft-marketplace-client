@@ -62,6 +62,10 @@
     .audioPlayer_box_info_box_price{
         width: 80%;
     }
+    
+    .audioPlayer_box_info_box{
+        display: block;
+    }
 }
 
 @media screen and (min-device-width: 427px) and (max-device-width: 768px) {

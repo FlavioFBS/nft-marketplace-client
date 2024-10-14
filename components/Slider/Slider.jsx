@@ -5,14 +5,40 @@ import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti'
 
 import Style from './Slider.module.css'
 import SliderCard from './SliderCard/SliderCard'
+import images from '@/img'
 
 const Slider = () => {
-    const sliderArray = [1, 2, 3, 4, 5, 6]
+    const sliderArray = [
+        {
+            background: images.creatorbackground1,
+            user: images.user1,
+        },
+        {
+            background: images.creatorbackground2,
+            user: images.user2,
+        },
+        {
+            background: images.creatorbackground3,
+            user: images.user3,
+        },
+        {
+            background: images.creatorbackground4,
+            user: images.user4,
+        },
+        {
+            background: images.creatorbackground5,
+            user: images.user5,
+        },
+        {
+            background: images.creatorbackground6,
+            user: images.user6,
+        },
+    ]
     const [width, setWidth] = useState(0)
     const dragSlider = useRef()
 
     useEffect(() => {
-      setWidth(dragSlider.current.scrollWidth - dragSlider.current.offsetWidth)
+        setWidth(dragSlider.current.scrollWidth - dragSlider.current.offsetWidth)
     })
 
     const handleScroll = (direction) => {
@@ -25,7 +51,6 @@ const Slider = () => {
             current.scrollLeft += scrollAmount
         }
     }
-    
 
     return (
         <div className={Style.slider}>
@@ -48,10 +73,10 @@ const Slider = () => {
                         className={Style.slider_box_item}
                         ref={dragSlider}
                         drag="x"
-                        dragConstraints={{right:0, left: -width}}
+                        dragConstraints={{ right: 0, left: -width }}
                     >
-                        {sliderArray.map((el,i) => (
-                            <SliderCard key={i+1} el={el} i={i}/>
+                        {sliderArray.map((el, i) => (
+                            <SliderCard key={i + 1} el={el} i={i} />
                         ))}
                     </motion.div>
                 </motion.div>

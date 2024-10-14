@@ -21,13 +21,6 @@
     overflow: hidden;
 }
 
-.sliderCard_box_img_img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-}
-
 .sliderCard_box_title{
     display: flex;
     align-items: center;

@@ -4,7 +4,6 @@ import { MdVerified } from 'react-icons/md'
 import { TiTick } from 'react-icons/ti'
 
 import Style from './FollowerTabCard.module.css'
-import images from '@/img'
 
 const FollowerTabCard = ({ i, el }) => {
 
@@ -21,7 +20,7 @@ const FollowerTabCard = ({ i, el }) => {
             <div className={Style.followerTabCard_box}>
                 <div className={Style.followerTabCard_box_img}>
                     <Image
-                        src={images.creatorbackground1}
+                        src={el.background}
                         alt='profile background'
                         className={Style.followerTabCard_box_img_img}
                         fill
@@ -33,7 +32,7 @@ const FollowerTabCard = ({ i, el }) => {
                     <Image
                         className={Style.followerTabCard_box_profile_img}
                         alt='profile picture'
-                        src={images.user1}
+                        src={el.user}
                     />
                 </div>
 

@@ -74,22 +74,6 @@ const SideBar = ({ setOpenSideMenu }) => {
     },
   ];
 
-  const openDiscoverMenu = () => {
-    if (!openDiscover) {
-      setOpenDiscover(true);
-    } else {
-      setOpenDiscover(false);
-    }
-  }
-
-  const openHelpMenu = () => {
-    if (!openHelp) {
-      setOpenHelp(true);
-    } else {
-      setOpenHelp(false);
-    }
-  }
-
   const closeSidebar = () => {
     setOpenSideMenu(false);
   }
@@ -100,7 +84,7 @@ const SideBar = ({ setOpenSideMenu }) => {
 
       <div className={Style.sidebar_box}>
         <Image src={images.logo} alt='logo' width={150} height={150} />
-        <p>Disscover the most outstading articles on all
+        <p>Discover the most outstading articles on all
           topcis of NFT & your own stories and share them
         </p>
         <div className={Style.sidebar_social}>
@@ -125,7 +109,7 @@ const SideBar = ({ setOpenSideMenu }) => {
       <div className={Style.sidebar_menu}>
         <div>
           <div className={Style.sidebar_menu_box}
-            onClick={() => openDiscoverMenu()}
+            onClick={() => setOpenDiscover(!openDiscover)}
           >
             <p>Discover</p>
             {!openDiscover && <TiArrowSortedDown />}
@@ -145,7 +129,7 @@ const SideBar = ({ setOpenSideMenu }) => {
         </div>
         <div>
           <div className={Style.sidebar_menu_box}
-            onClick={() => openHelpMenu()}
+            onClick={() => setOpenHelp(!openHelp)}
           >
             <p>Help Center</p>
             {!openHelp && <TiArrowSortedDown />}

@@ -1,4 +1,6 @@
 .nftCard{
+    width: 80%;
+    margin: auto;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));;
     gap: 3rem;
