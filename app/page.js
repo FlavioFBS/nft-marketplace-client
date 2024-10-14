@@ -13,6 +13,7 @@ import { BigNFTSlider,
   FollowerTab,
   AudioLive,
   Slider,
+  Brand,
 } from '@/components/ComponentIndex';
 
 
@@ -37,12 +38,13 @@ const Home = () => {
       />
       <Filter />
       <NFTCard />
-      <Subscribe />
       <Title
         heading='Browse by Category'
         paragraph='Explore the NFTs in the most featured categories'
       />
       <Category />
+      <Subscribe />
+      <Brand />
     </div>
   )
 }
