@@ -14,6 +14,7 @@ import { BigNFTSlider,
   AudioLive,
   Slider,
   Brand,
+  Video,
 } from '@/components/ComponentIndex';
 
 
@@ -45,6 +46,7 @@ const Home = () => {
       <Category />
       <Subscribe />
       <Brand />
+      <Video />
     </div>
   )
 }

@@ -41,9 +41,11 @@ import nft_image_2 from "./nft-image-2.png";
 import nft_image_3 from "./nft-image-3.png";
 import musiceWave from "./musicwave.png";
 import update from "./update.png";
-import earn from "./eran.png"
+import earn from "./eran.png";
+import NFTVideo from "./nftvideo.png"
 
 export default {
+  NFTVideo,
   earn,
   collection,
   update,
