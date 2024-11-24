@@ -68,7 +68,7 @@ const Filter = () => {
                 <div className={Style.filter_box_right}>
                     <div 
                         className={Style.filter_box_right_box}
-                        onClick={() => openFilter()}
+                        onClick={() => setFilter(!filter)}
                     >
                         <FaFilter />
                         <span>Filter</span> {filter ? <FaAngleDown /> : <FaAngleUp/> }
@@ -89,7 +89,7 @@ const Filter = () => {
                         <div className={Style.filter_box_items_box}>
                             <div
                                 className={Style.filter_box_items_box_item_trans}
-                                onClick={() => openImage()}
+                                onClick={() => setImage(!image)}
                             >
                                 <FaImages/> <small>Images</small>
                                 {image ? <AiFillCode/> : <TiTick/>}
@@ -99,7 +99,7 @@ const Filter = () => {
                         <div className={Style.filter_box_items_box}>
                             <div
                                 className={Style.filter_box_items_box_item_trans}
-                                onClick={() => openVideo()}
+                                onClick={() => setVideo(!video)}
                             >
                                 <FaVideo/> <small>Videos</small>
                                 {video ? <AiFillCloseCircle/> : <TiTick/>}
@@ -109,7 +109,7 @@ const Filter = () => {
                         <div className={Style.filter_box_items_box}>
                             <div 
                                 className={Style.filter_box_items_box_item_trans}
-                                onClick={() => openMusic()}
+                                onClick={() => setMusic(!music)}
                             >
                                 <FaMusic/> <small>Musics</small>
                                 {music ? <AiFillCloseCircle/> : <TiTick/>}
