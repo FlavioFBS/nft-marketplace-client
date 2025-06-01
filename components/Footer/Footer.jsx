@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image';
 import {
   TiSocialFacebook,
@@ -16,12 +16,19 @@ import Style from './Footer.module.css';
 import images from '../../img';
 import { Discover, HelpCenter } from '../NavBar/index';
 
+
 const Footer = () => {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <div className={Style.footer}>
       <div className={Style.footer_box}>
         <div className={Style.footer_box_social}>
-          <Image src={images.logo} alt='footer logo' height={100} width={100} />
+          <Image src={images.logo} alt='footer logo' height={100} width={100} priority/>
           <p>
             The world's first and largest digital marketplace for crypto collectibles
             and non-fungible tokens (NFT). Buy, sell exclusive digital items.
@@ -60,8 +67,12 @@ const Footer = () => {
           <h3>Subscribe</h3>
 
           <div className={Style.subscribe_box}>
-            <input type="email" placeholder='Enter you email *' />
-            <RiSendPlaneFill className={Style.subscribe_box_send} />
+            {isClient && (
+              <>
+                <input type="email" placeholder='Enter you email *' />
+                <RiSendPlaneFill className={Style.subscribe_box_send} />
+              </>
+            )}
           </div>
 
           <div className={Style.subscribe_box_info}>

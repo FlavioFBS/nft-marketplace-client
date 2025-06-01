@@ -16,6 +16,7 @@ const LikeProfile = () => {
             width={15}
             height={15}
             key={i + 1}
+            alt='likeProfile'
             className={Style.like_box_img}
           />
         </div>

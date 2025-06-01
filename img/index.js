@@ -24,15 +24,6 @@ import service1 from "./service-1.png";
 import service2 from "./service-2.png";
 import service3 from "./service-3.png";
 import service4 from "./service-4.png";
-import logoLight from "./logo-light.svg";
-import logo from "./logo.svg";
-import facebook from "./facebook.svg";
-import twitter from "./twitter.svg";
-import telegram from "./telegram.svg";
-import youtube from "./youtube.svg";
-import vimeo from "./vimeo.svg";
-import vector from "./VectorHIW.svg";
-import zgcmq from "./zgcmq.svg";
 import hero from "./hero.png";
 import nft_1 from "./nft_1.png";
 import getAble from "./getable.png";
@@ -81,13 +72,13 @@ export default {
   service2,
   service3,
   service4,
-  logo,
-  logoLight,
-  facebook,
-  telegram,
-  twitter,
-  vector,
-  vimeo,
-  youtube,
-  zgcmq,
+  logo: '/svg/logo.svg',
+  logoLight: '/svg/logo-light.svg',
+  facebook: '/svg/facebook.svg',
+  telegram: '/svg/telegram.svg',
+  twitter: '/svg/twitter.svg',
+  vector: '/svg/VectorHIW.svg',
+  vimeo: '/svg/vimeo.svg',
+  youtube: '/svg/youtube.svg',
+  zgcmq: '/svg/zgcmq.svg',
 };

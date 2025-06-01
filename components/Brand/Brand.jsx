@@ -16,6 +16,7 @@ const Brand = () => {
                     alt='brand logo'
                     width={100}
                     height={100}
+                    priority
                 />
                 <h1>Earn free crypto with Ciscrypt</h1>
                 <p>A creative agency that lead and inspire.</p>
@@ -31,6 +32,7 @@ const Brand = () => {
                     alt='brand logo'
                     sizes='100vw'
                     className={Style.brand_box_left_img}
+                    priority
                 />
             </div>
         </div>
