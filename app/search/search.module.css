@@ -1,0 +1,29 @@
+.author_box {
+    width: 80%;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-top: 4rem;
+}
+
+@media screen and (max-width: 40em) {
+    .author_box {
+        width: 90%;
+        grid-template-columns: 1fr;
+    }
+}
+
+@media screen and (min-width: 40em) and (max-width: 50em) {
+    .author_box {
+        width: 90%;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (min-width: 50em) and (max-width: 80em) {
+    .author_box {
+        width: 90%;
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
