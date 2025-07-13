@@ -1,0 +1,281 @@
+.NFTDetailsImg{
+    width: 100%;
+    height: 100%;
+}
+
+.NFTDetailsImg_box_NFT{
+    display: grid;
+    position: relative;
+    margin-bottom: 2rem;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.NFTDetailsImg_box_NFT:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.NFTDetailsImg_box_NFT_img{
+    grid-column: 1 / -1;
+    grid-row: 1 / end;
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 75%; /* 4:3 aspect ratio */
+}
+
+.NFTDetailsImg_box_NFT_img_img{
+    border-radius: 1rem;
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.NFTDetailsImg_box_NFT_img_img:hover {
+    transform: scale(1.05);
+}
+
+.NFTDetailsImg_box_NFT_like{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    grid-column: 1 / -1;
+    grid-row: 1 / end;
+    z-index: 111111;
+    align-self: flex-start;
+    padding: 1rem 2rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.5) 0%, transparent 100%);
+    transition: opacity 0.3s ease;
+}
+
+.NFTDetailsImg_box_NFT_like p{
+    background-color: var(--icons-color);
+    padding: .5rem 1rem;
+    color: var(--main-bg-color);
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.NFTDetailsImg_box_NFT_like p:hover {
+    background-color: var(--main-bg-color);
+    color: var(--icons-color);
+    transform: scale(1.05);
+}
+
+.NFTDetailsImg_box_NFT_like_icon{
+    font-size: 1.4rem;
+    color: var(--icons-color);
+    transition: color 0.3s ease;
+}
+
+.NFTDetailsImg_box_NFT_like_icon_ {
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.NFTDetailsImg_box_NFT_like p:hover .NFTDetailsImg_box_NFT_like_icon_ {
+    transform: scale(1.2);
+}
+
+.NFTDetailsImg_box_details,
+.NFTDetailsImg_box_description{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    line-height: 0;
+    background-color: var(--icons-bg-color);
+    border-radius: .5rem;
+    padding: 1rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.NFTDetailsImg_box_details:hover,
+.NFTDetailsImg_box_description:hover {
+    background-color: var(--icons-color);
+    color: var(--main-bg-color);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.NFTDetailsImg_box_details_box,
+.NFTDetailsImg_box_description_box{
+    padding: 1rem;
+    font-size: 1rem;
+    background-color: var(--icons-bg-color);
+    border-radius: .5rem;
+    margin-top: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.NFTDetailsImg_box_details_box:hover,
+.NFTDetailsImg_box_description_box:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.NFTDetailsImg_box_details_box p{
+    line-height: 1.4;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.NFTDetailsImg_box_details_box p {
+    margin-bottom: 0.8rem;
+}
+
+.NFTDetailsImg_box_details_box p:last-child {
+    margin-bottom: 0;
+}
+
+.NFTDetailsImg_box_details_box small {
+    color: var(--icons-color);
+    font-weight: 600;
+}
+
+.arrow_icon {
+    transition: transform 0.3s ease;
+    font-size: 1.2rem;
+}
+
+.arrow_up {
+    transform: rotate(0deg);
+}
+
+.NFTDetailsImg_box_description_box,
+.NFTDetailsImg_box_details_box {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* image loader */
+.NFTDetailsImg_box_NFT_img_img {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.NFTDetailsImg_box_NFT_like p:active {
+    transform: scale(0.95);
+}
+
+.NFTDetailsImg_box_details:active,
+.NFTDetailsImg_box_description:active {
+    transform: translateY(0);
+}
+
+.NFTDetailsImg_box_details:focus,
+.NFTDetailsImg_box_description:focus {
+    outline: 2px solid var(--icons-color);
+    outline-offset: 2px;
+}
+
+.NFTDetailsImg_box_NFT_like p:focus {
+    outline: 2px solid var(--main-bg-color);
+    outline-offset: 2px;
+}
+
+/* Loading spinner styles */
+.image_loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 1rem;
+}
+
+.loading_spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid var(--icons-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Enhanced responsive design */
+@media screen and (max-width: 1024px) {
+    .NFTDetailsImg_box_NFT_img {
+        padding-bottom: 80%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .NFTDetailsImg_box_NFT_img {
+        padding-bottom: 90%;
+    }
+    
+    .loading_spinner {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .NFTDetailsImg_box_NFT_img {
+        padding-bottom: 100%;
+    }
+    
+    .loading_spinner {
+        width: 25px;
+        height: 25px;
+        border-width: 2px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .NFTDetailsImg_box_NFT {
+        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.05);
+    }
+    
+    .NFTDetailsImg_box_NFT:hover {
+        box-shadow: 0 20px 40px rgba(255, 255, 255, 0.1);
+    }
+}
