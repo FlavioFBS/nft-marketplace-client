@@ -167,8 +167,8 @@ const NFTDescription = () => {
             <span>Auction ending in: </span>
           </p>
           <div className={Style.NFTDescription_box_profile_biding_box_timer}>
-            {"02Days,02Hours,40Minutes,02Seconds".split(',').map((item) => (
-              <div className={Style.NFTDescription_box_profile_biding_box_timer_item}>
+            {"02Days,02Hours,40Minutes,02Seconds".split(',').map((item, index) => (
+              <div className={Style.NFTDescription_box_profile_biding_box_timer_item} key={index}>
                 <p>{item.slice(0,2)}</p>
                 <span>{item.slice(2)}</span>
               </div>

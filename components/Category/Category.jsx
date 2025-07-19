@@ -24,8 +24,8 @@ const Category = () => {
                             <Image
                                 src={el}
                                 className={Style.category_box_img_img}
-                                fill
-                                sizes='100vw'
+                                // fill
+                                // sizes='100vw'
                                 alt='Background image'
                             />
                         </div>

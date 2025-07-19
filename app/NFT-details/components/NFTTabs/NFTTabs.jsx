@@ -11,14 +11,14 @@ const NFTTabs = ({ dataTab, icon }) => {
   return (
     <div className={Styles.NFTTabs}>
       {dataTab.map((item, index) => (
-        <div key={index} className={Styles.NFTTabs_box}>
+        <div className={Styles.NFTTabs_box} key={`${item}-${index}`}>
           <Image 
             src={item} 
             alt="profile image"
             width={40} 
             height={40} 
-            objectFit="cover"
             className={Styles.NFTTabs_box_img}
+            priority
           />
           <div className={Styles.NFTTabs_box_info}>
             <span>Offer by $110 by 
