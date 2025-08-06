@@ -9,7 +9,6 @@ import img from '@/img';
 
 const Page = () => {
   const [fileUrl, setFileUrl] = useState(null);
-  
   const onDrop = useCallback(async (acceptedFiles) => {
     const file = acceptedFiles[0];
     setFileUrl(URL.createObjectURL(file));

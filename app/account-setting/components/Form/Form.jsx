@@ -1,4 +1,5 @@
-import React from 'react';
+'use client'
+import React, { useEffect, useState } from 'react';
 import { HiOutlineMail } from 'react-icons/hi'
 import { MdOutlineHttp, MdOutlineContentCopy } from 'react-icons/md';
 import { TiSocialFacebook, TiSocialTwitter, TiSocialInstagram } from 'react-icons/ti';
@@ -7,101 +8,109 @@ import { Button } from '@/components/ComponentIndex';
 import Style from './Form.module.css';
 
 const Form = () => {
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <div className={Style.Form}>
       <div className={Style.Form_box}>
-        <form action="">
-          <div className={Style.Form_box_input}>
-            <label htmlFor="name">Username</label>
-            <input type="text" placeholder='Enter your username' className={Style.Form_box_input_userName} />
-          </div>
+        {isClient && (
 
-          <div className={Style.Form_box_input}>
-            <label htmlFor="email">Email</label>
-            <div className={Style.Form_box_input_box}>
-              <div className={Style.Form_box_input_box_icon}>
-                <HiOutlineMail/>
-              </div>
-              <input type="text" placeholder='Enter your email'/>
-            </div>
-          </div>
-
-          <div className={Style.Form_box_input}>
-            <label htmlFor="description">Description</label>
-            <textarea 
-              name=''
-              id='description'
-              cols={30}
-              rows={6}
-              placeholder='Something about yourself' 
-              className={Style.Form_box_input_display}
-            />
-          </div>
-
-          <div className={Style.Form_box_input}>
-            <label htmlFor="website">Website</label>
-            <div className={Style.Form_box_input_box}>
-              <div className={Style.Form_box_input_box_icon}>
-                <MdOutlineHttp />
-              </div>
-              <input type="text" placeholder='Enter your website'/>
-            </div>
-          </div>
-
-          <div className={Style.Form_box_input_social}>
+          <form action="">
             <div className={Style.Form_box_input}>
-              <label htmlFor="facebook">Facebook</label>
+              <label htmlFor="name">Username</label>
+              <input type="text" placeholder='Enter your username' className={Style.Form_box_input_userName} />
+            </div>
+
+            <div className={Style.Form_box_input}>
+              <label htmlFor="email">Email</label>
               <div className={Style.Form_box_input_box}>
                 <div className={Style.Form_box_input_box_icon}>
-                  <TiSocialFacebook />
+                  <HiOutlineMail />
                 </div>
-                <input type="text" placeholder='Enter your Facebook link'/>
+                <input type="text" placeholder='Enter your email' />
               </div>
             </div>
 
             <div className={Style.Form_box_input}>
-              <label htmlFor="twitter">Twitter</label>
+              <label htmlFor="description">Description</label>
+              <textarea
+                name=''
+                id='description'
+                cols={30}
+                rows={6}
+                placeholder='Something about yourself'
+                className={Style.Form_box_input_display}
+              />
+            </div>
+
+            <div className={Style.Form_box_input}>
+              <label htmlFor="website">Website</label>
               <div className={Style.Form_box_input_box}>
                 <div className={Style.Form_box_input_box_icon}>
-                  <TiSocialTwitter />
+                  <MdOutlineHttp />
                 </div>
-                <input type="text" placeholder='Enter your Twitter link'/>
+                <input type="text" placeholder='Enter your website' />
+              </div>
+            </div>
+
+            <div className={Style.Form_box_input_social}>
+              <div className={Style.Form_box_input}>
+                <label htmlFor="facebook">Facebook</label>
+                <div className={Style.Form_box_input_box}>
+                  <div className={Style.Form_box_input_box_icon}>
+                    <TiSocialFacebook />
+                  </div>
+                  <input type="text" placeholder='Enter your Facebook link' />
+                </div>
+              </div>
+
+              <div className={Style.Form_box_input}>
+                <label htmlFor="twitter">Twitter</label>
+                <div className={Style.Form_box_input_box}>
+                  <div className={Style.Form_box_input_box_icon}>
+                    <TiSocialTwitter />
+                  </div>
+                  <input type="text" placeholder='Enter your Twitter link' />
+                </div>
+              </div>
+
+              <div className={Style.Form_box_input}>
+                <label htmlFor="instagram">Instagram</label>
+                <div className={Style.Form_box_input_box}>
+                  <div className={Style.Form_box_input_box_icon}>
+                    <TiSocialInstagram />
+                  </div>
+                  <input type="text" placeholder='Enter your Instagram link' />
+                </div>
               </div>
             </div>
 
             <div className={Style.Form_box_input}>
-              <label htmlFor="instagram">Instagram</label>
+              <label htmlFor="wallet">Wallet address</label>
               <div className={Style.Form_box_input_box}>
                 <div className={Style.Form_box_input_box_icon}>
-                  <TiSocialInstagram />
+                  <MdOutlineHttp />
                 </div>
-                <input type="text" placeholder='Enter your Instagram link'/>
+                <input type="text" placeholder='Enter your wallet address' />
+
+                <div className={Style.Form_box_input_box_icon}>
+                  <MdOutlineContentCopy />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className={Style.Form_box_input}>
-            <label htmlFor="wallet">Wallet address</label>
-            <div className={Style.Form_box_input_box}>
-              <div className={Style.Form_box_input_box_icon}>
-                <MdOutlineHttp />
-              </div>
-              <input type="text" placeholder='Enter your wallet address'/>
-
-              <div className={Style.Form_box_input_box_icon}>
-                <MdOutlineContentCopy />
-              </div>
+            <div className={Style.Form_box_btn}>
+              <Button
+                btnName='Upload profile'
+                className={Style.button}
+                handleClick={() => { }}
+              />
             </div>
-          </div>
-
-          <div className={Style.Form_box_btn}>
-            <Button 
-              btnName='Upload profile' 
-              className={Style.button} 
-              handleClick={() => {}}
-            />
-          </div>
-        </form>
+          </form>
+        )}
       </div>
     </div>
   );
