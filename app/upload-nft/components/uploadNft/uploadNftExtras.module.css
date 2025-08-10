@@ -1,0 +1,78 @@
+/* Error handling styles */
+.error-message {
+    color: #ff6b6b;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    display: block;
+    padding: 0.5rem;
+    background-color: rgba(255, 107, 107, 0.1);
+    border-radius: 0.3rem;
+    border-left: 3px solid #ff6b6b;
+}
+
+.upload_box input.error,
+.upload_box textarea.error {
+    border-color: #ff6b6b !important;
+    background-color: rgba(255, 107, 107, 0.05);
+}
+
+.upload_box input.error:focus,
+.upload_box textarea.error:focus {
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+}
+
+/* Success state */
+.success-message {
+    color: #51cf66;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    display: block;
+    padding: 0.5rem;
+    background-color: rgba(81, 207, 102, 0.1);
+    border-radius: 0.3rem;
+    border-left: 3px solid #51cf66;
+}
+
+/* Form validation improvements */
+.upload_box label {
+    position: relative;
+}
+
+.upload_box label::after {
+    content: " *";
+    color: #ff6b6b;
+    font-weight: bold;
+    margin-left: 0.2rem;
+}
+
+/* Improved focus states */
+.upload_box input:focus,
+.upload_box textarea:focus {
+    outline: none;
+    border-color: var(--icons-color);
+    box-shadow: 0 0 0 3px rgba(var(--icons-color-rgb), 0.2);
+    transform: translateY(-1px);
+}
+
+/* Progress bar for upload */
+.upload-progress {
+    width: 100%;
+    height: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    margin-top: 1rem;
+    overflow: hidden;
+}
+
+.upload-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--icons-color), var(--main-bg-color));
+    border-radius: 2px;
+    transition: width 0.3s ease;
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200px 0; }
+    100% { background-position: calc(200px + 100%) 0; }
+}
