@@ -45,7 +45,7 @@ const Dropzone = (
           <p>{title}</p>
           <div className={Style.DropZone_box_input_img}>
             <Image
-              src={image || img.nft_image_1}
+              src={image || fileUrl || img.nft_image_1}
               alt="Uploaded file"
               width={100}
               height={100}
@@ -62,7 +62,7 @@ const Dropzone = (
         <aside className={Style.DropZone_box_aside}>
           <div className={Style.DropZone_box_aside_box}>
             <Image
-              src={img.nft_image_1} // ipfs link
+              src={fileUrl} // ipfs link
               alt="Uploaded file"
               width={100}
               height={100}
