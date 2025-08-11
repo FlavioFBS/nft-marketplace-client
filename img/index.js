@@ -34,6 +34,10 @@ import musiceWave from "./musicwave.png";
 import update from "./update.png";
 import earn from "./eran.png";
 import NFTVideo from "./nftvideo.png"
+import walletProviderMetamask from './provider-metamask.png';
+import walletProviderCoinbase from './provider-coinbase.png';
+import walletProviderWalletConnect from './provider-walletconnect.png';
+import walletProviderFortmatic from './provider-fortmatic.jpg';
 
 export default {
   NFTVideo,
@@ -81,4 +85,8 @@ export default {
   vimeo: '/svg/vimeo.svg',
   youtube: '/svg/youtube.svg',
   zgcmq: '/svg/zgcmq.svg',
+  walletProviderFortmatic,
+  walletProviderMetamask,
+  walletProviderCoinbase,
+  walletProviderWalletConnect,
 };
