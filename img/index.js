@@ -25,6 +25,7 @@ import service2 from "./service-2.png";
 import service3 from "./service-3.png";
 import service4 from "./service-4.png";
 import hero from "./hero.png";
+import hero2 from "./hero2.png";
 import nft_1 from "./nft_1.png";
 import getAble from "./getable.png";
 import nft_image_1 from "./nft-image-1.png";
@@ -51,6 +52,7 @@ export default {
   getAble,
   nft_1,
   hero,
+  hero2,
   creatorbackground1,
   creatorbackground2,
   creatorbackground3,
