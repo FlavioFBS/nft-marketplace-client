@@ -105,7 +105,7 @@ const Form = () => {
             <div className={Style.Form_box_btn}>
               <Button
                 btnName='Upload profile'
-                className={Style.button}
+                classStyle={Style.button}
                 handleClick={() => { }}
               />
             </div>
