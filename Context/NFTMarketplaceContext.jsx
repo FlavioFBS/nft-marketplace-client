@@ -1,13 +1,9 @@
 'use client'
 import React, { useState, useEffect } from 'react';
+import { ethers} from 'ethers';
+import { useAccount, WagmiProvider, createConfig } from 'wagmi';
+import { metaMask } from 'wagmi/connectors'
 export const NFTMarketplaceContext = React.createContext();
-
-import {
-  RainbowKitProvider,
-  getDefaultWallets,
-  getDefaultConfig,
-} from '@rainbow-me/rainbowkit';
-import { WagmiProvider } from 'wagmi';
 import {
   mainnet,
   polygon,
@@ -18,13 +14,12 @@ import {
 } from 'wagmi/chains';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { createQueryClient } from '@/config/queryClient';
+import { NFTMarketplaceAbi, NFTMarketplaceAddress } from './constans';
 
-const { wallets } = getDefaultWallets();
-
-const config = getDefaultConfig({
-  appName: 'MetaMask PoC with Rainbow Kit',
-  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'PROJECT_ID',
-  wallets,
+const config = createConfig({
+  connectors: [
+    metaMask()
+  ],
   chains: [
     mainnet,
     polygon,
@@ -34,23 +29,90 @@ const config = getDefaultConfig({
     sepolia,
   ],
   ssr: true,
-});
+})
 
 const queryClient = createQueryClient();
 
-export function NFTMarketplaceProvider({ children }) {
-  const titleData = 'sample Title'
+// IPFS config
+const fetchContract = (signerOrProvider) => {
+  const contract = new ethers.Contract(NFTMarketplaceAddress, NFTMarketplaceAbi, signerOrProvider);
+  return contract;
+};
+
+// connecting with smart contract
+const connectToContract = async (signer) => {
+  try {
+    const provider = new ethers.BrowserProvider(window.ethereum);
+    const signer = await provider.getSigner();
+    console.log({signer});
+    
+    const contract = fetchContract(signer);
+    return contract;
+  } catch (error) {
+    console.error("Error connecting to contract:", error);
+  }
+};
+
+
+
+
+function MarketplaceContent({ children }) {
+  const titleData = 'Hero Section Title';
+  const { address, isConnecting, isDisconnected } = useAccount();
+
+  // useEffect(() => {
+  //   let account = '-'
+  //   try {
+  //     if (!window.ethereum) return 'Install MetaMask';
+      
+  //     const accounts = window.ethereum.request({ method: 'eth_accounts' })
+  //       .then(accounts => {
+  //         console.log('metamask-address: ', accounts[0]);
+  //       })
+  //   } catch (error) {
+  //     console.error("Error checking wallet connection:", error);
+  //   }
+  // }, [address]);
+
+  const checkContract = async () => {
+    const contract = await connectToContract();
+    if (!contract) {
+      console.log('---- there isn\'t contract')
+      return
+    };
+
+    // Check if the contract is deployed
+    const contractAddress = await contract.getAddress();
+    const contractInterface = await contract.interface
+    console.log({contract, contractInterface});
+    
+    console.log("Contract address:", contractAddress);
+  }
+
+  const checkIfWalletConnected = () => {
+    if (isConnecting) return 'Connecting...';
+    if (isDisconnected) return 'Wallet Not Connected';
+
+    return `Wallet Connected: ${address}`;
+  }
 
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
-          <NFTMarketplaceContext.Provider value={{ titleData }}>
-            {children}
-          </NFTMarketplaceContext.Provider>
-        </RainbowKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <NFTMarketplaceContext.Provider value={{ titleData, checkContract, checkIfWalletConnected, address, isConnecting, isDisconnected }}>
+      {children}
+    </NFTMarketplaceContext.Provider>    
   );
 }
 
+export function NFTMarketplaceProvider({children}) {
+  return (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        {/* <RainbowKitProvider> */}
+          <MarketplaceContent>
+            {children}
+          </MarketplaceContent>
+        {/* </RainbowKitProvider> */}
+      </QueryClientProvider>
+    </WagmiProvider>
+  )
+}

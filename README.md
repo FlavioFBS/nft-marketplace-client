@@ -51,3 +51,15 @@ REPORT_GAS=true npx hardhat test
 npx hardhat node
 npx hardhat ignition deploy ./ignition/modules/Marketplace.js
 ```
+
+# Run on dev
+```shell
+# Console 1:
+npx hardhat node
+
+# Console 2:
+npx hardhat ignition deploy ./ignition/modules/Marketplace.js --network localhost
+
+# Console 3:
+npm run dev
+```

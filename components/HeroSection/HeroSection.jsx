@@ -8,13 +8,28 @@ import images from '@/img';
 import { NFTMarketplaceContext } from '@/Context/NFTMarketplaceContext';
 
 const HeroSection = () => {
-  const { titleData } = useContext(NFTMarketplaceContext);
+  const { titleData, checkIfWalletConnected, address, isConnecting, isDisconnected } = useContext(NFTMarketplaceContext);
+
+  // useEffect(() => {
+  //   // checkContract();
+  //   const walletStatus = checkIfWalletConnected();
+  //   console.log({walletStatus});
+    
+  // }, []);
+
 
   return (
     <div className={Style.heroSection}>
       <div className={Style.heroSection_box}>
         <div className={Style.heroSection_box_left}>
           <h1>{titleData}</h1>
+          <p>{checkIfWalletConnected()}</p>
+          {isConnecting && <p>Connecting...</p>}
+          {isDisconnected && <p>Wallet Not Connected</p>}
+          <p>
+            Wallet Address: {address}
+          </p>
+          <hr />
           <p>
             Discover the most outstading NFTs in all
             topics of life. Create your NFTs and sell them
