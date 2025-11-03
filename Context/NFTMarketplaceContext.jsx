@@ -15,7 +15,10 @@ import {
 import { QueryClientProvider } from '@tanstack/react-query';
 import { createQueryClient } from '@/config/queryClient';
 import { NFTMarketplaceAbi, NFTMarketplaceAddress } from './constans';
+import { createHelia } from 'helia';
+import { json } from '@helia/json'
 
+// Wagmi config
 const config = createConfig({
   connectors: [
     metaMask()
@@ -33,7 +36,6 @@ const config = createConfig({
 
 const queryClient = createQueryClient();
 
-// IPFS config
 const fetchContract = (signerOrProvider) => {
   const contract = new ethers.Contract(NFTMarketplaceAddress, NFTMarketplaceAbi, signerOrProvider);
   return contract;
@@ -55,10 +57,28 @@ const connectToContract = async (signer) => {
 
 
 
-
 function MarketplaceContent({ children }) {
   const titleData = 'Hero Section Title';
   const { address, isConnecting, isDisconnected } = useAccount();
+  const [helia, setHelia] = useState(null);
+  const [heliaJson, setHeliaJson] = useState(null);
+
+  useEffect(() => {
+    const initHelia = async () => {
+      if (helia) return;
+      try {
+        const heliaNode = await createHelia();
+        const j = json(heliaNode);
+        setHelia(heliaNode);
+        setHeliaJson(j);
+        console.log('Helia IPFS node initialized');
+        
+      } catch (error) {
+        console.error('Error initializing Helia IPFS node:', error);
+      }
+    };
+    initHelia();
+  }, []);
 
   // useEffect(() => {
   //   let account = '-'
@@ -96,8 +116,45 @@ function MarketplaceContent({ children }) {
     return `Wallet Connected: ${address}`;
   }
 
+
+  const uploadToIPFS = async (image, name, description) => {
+    if (!image || !name || !description) {
+      console.error('Missing required data for IPFS upload');
+      return
+    }
+    try {
+      // upload image to IPFS
+      const imageBuffer = await image.arrayBuffer();
+      const imageCid = await helia.blockstore.put(new Uint8Array(imageBuffer));
+      const imageUrl = `ipfs://${imageCid.toString()}`;
+      console.log('Image uploaded to IPFS: ', imageUrl);
+      
+      // create and upload metadata JSON
+      const metadata = {
+        name,
+        description,
+        image: imageUrl,
+      };
+      const metadataCid = await heliaJson.add(metadata);
+      const metadataUrl = `ipfs://${metadataCid.toString()}`;
+      console.log('Metadata uploaded to IPFS: ', metadataUrl);
+
+      return metadataUrl;
+    } catch (error) {
+      console.error('Error uploading image to IPFS:', error);
+    }
+  }
+
   return (
-    <NFTMarketplaceContext.Provider value={{ titleData, checkContract, checkIfWalletConnected, address, isConnecting, isDisconnected }}>
+    <NFTMarketplaceContext.Provider value={{ 
+      titleData, 
+      checkContract, 
+      checkIfWalletConnected, 
+      address, 
+      isConnecting, 
+      isDisconnected,
+      uploadToIPFS 
+    }}>
       {children}
     </NFTMarketplaceContext.Provider>    
   );
