@@ -60,7 +60,7 @@ contract NFTMarketplace is ERC721URIStorage {
 
     // let create "CREATE NFT TOKEN FUNCTION"
 
-    function createFunction(
+    function createToken(
         string memory tokenURI,
         uint256 price
     ) public payable returns (uint256) {
@@ -172,7 +172,7 @@ contract NFTMarketplace is ERC721URIStorage {
     }
 
     // PURCHASE ITEMS
-    function fetchMyNFT() public view returns (MarketItem[] memory) {
+    function fetchMyNFTs() public view returns (MarketItem[] memory) {
         uint256 totalCount = _tokenIds.current();
         uint256 itemCount = 0;
         uint256 myNftIndex = 0;
