@@ -96,6 +96,9 @@ function MarketplaceContent({ children }) {
 
   const checkContract = async () => {
     const contract = await connectToContract();
+    console.log('contract-connected');
+    checkIfWalletConnected()
+    
     if (!contract) {
       console.log('---- there isn\'t contract')
       return

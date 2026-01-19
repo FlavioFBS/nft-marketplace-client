@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { MdNotifications } from 'react-icons/md';
@@ -10,6 +10,8 @@ import Style from './NavBar.module.css'
 import { Discover, HelpCenter, Notification, Profile, SideBar } from './index';
 import { Button } from '../ComponentIndex';
 import images from '../../img';
+import { NFTMarketplaceContext } from '@/Context/NFTMarketplaceContext';
+
 
 const NavBar = () => {
   const [discover, setDiscover] = useState(false);
@@ -17,6 +19,7 @@ const NavBar = () => {
   const [notification, setNotification] = useState(false)
   const [profile, setProfile] = useState(false)
   const [openSideMenu, setOpenSideMenu] = useState(false)
+  const { checkContract, checkIfWalletConnected, address: currentAccount, isConnecting, isDisconnected } = useContext(NFTMarketplaceContext);
 
 
   const openMenu = (e) => {
@@ -124,7 +127,14 @@ const NavBar = () => {
 
           {/* CREATE BUTTON SECTION */}
           <div className={Style.navbar_container_right_button}>
-            <Button btnName='Create' handleClick={() => {}}/>
+            {currentAccount == '' || currentAccount == undefined || currentAccount == null ?
+              <Button btnName='Connect' handleClick={checkContract} /> :
+              (
+                <Link href={{ pathname: '/upload-nft' }}>
+                  <Button btnName='Create' handleClick={() => { }} />
+                </Link>
+              )
+            }
           </div>
 
           {/* USER PROFILE */}
