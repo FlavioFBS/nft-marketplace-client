@@ -164,7 +164,11 @@ const NavBar = () => {
       {/* SIDEBAR COMPONENT */}
       {openSideMenu && (
         <div className={Style.sidebar}>
-          <SideBar setOpenSideMenu={setOpenSideMenu} />
+          <SideBar 
+            setOpenSideMenu={setOpenSideMenu} 
+            connectWallet={checkContract}
+            currentAccount={currentAccount}
+          />
         </div>
       )}
     </div>

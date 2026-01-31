@@ -12,10 +12,12 @@ import formStyle from '../../../account-setting/components/Form/Form.module.css'
 import images from '@/img';
 import { Button } from '@/components/ComponentIndex';
 import Dropzone from '../Dropzone/Dropzone';
+import { useRouter } from 'next/navigation';
 
-const UploadNFT = () => {
+const UploadNFT = ({ uploadToIPFS, createNFT }) => {
+  const [price, setPrice] = useState("");
   const [active, setActive] = useState(0);
-  const [itemName, setItemName] = useState("");
+  const [name, setName] = useState("");
   const [website, setWebsite] = useState("");
   const [description, setDescription] = useState("");
   const [royalties, setRoyalties] = useState("");
@@ -24,25 +26,27 @@ const UploadNFT = () => {
   const [properties, setProperties] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [image, setImage] = useState(null);
+
+  const router = useRouter();
 
   const validateForm = () => {
     const newErrors = {};
-    if (!itemName.trim()) newErrors.itemName = "Item name is required";
+    if (!name.trim()) newErrors.name = "Item name is required";
     if (!description.trim()) newErrors.description = "Description is required";
     if (!category) newErrors.category = "Please select a category";
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (validateForm()) {
       setIsUploading(true);
-      // Simulate upload process
-      setTimeout(() => {
-        setIsUploading(false);
-        alert("NFT uploaded successfully!");
-      }, 2000);
+
+      await createNFT(name, price, image, description, router, website, royalties, fileSize, category, properties);
+      setIsUploading(false);
+      alert("NFT uploaded successfully!");
     }
   };
 
@@ -87,14 +91,16 @@ const UploadNFT = () => {
         title="JPG, PNG, WEBM , MAX 100MB"
         heading="Drag & drop file"
         subHeading="or Browse media on your device"
-        itemName={itemName}
+        name={name}
         website={website}
         description={description}
         royalties={royalties}
         fileSize={fileSize}
         category={category}
         properties={properties}
-        image={images.upload}
+        // image={images.upload}
+        setImage={setImage}
+        uploadToIPFS={uploadToIPFS}
       />
 
       <div className={Style.upload_box}>
@@ -105,10 +111,10 @@ const UploadNFT = () => {
             placeholder="Enter NFT name"
             className={`${formStyle.Form_box_input_userName} ${errors.itemName ? ExtraStyle.error : ''}`}
             onChange={(e) => {
-              setItemName(e.target.value);
+              setName(e.target.value);
               if (errors.itemName) setErrors(prev => ({ ...prev, itemName: null }));
             }}
-            value={itemName}
+            value={name}
           />
           {errors.itemName && <span className={ExtraStyle['error-message']}>{errors.itemName}</span>}
         </div>
@@ -167,9 +173,8 @@ const UploadNFT = () => {
           <div className={Style.upload_box_slider_div}>
             {categoryArry.map((el, i) => (
               <div
-                className={`${Style.upload_box_slider} ${
-                  active === i + 1 ? Style.active : ""
-                }`}
+                className={`${Style.upload_box_slider} ${active === i + 1 ? Style.active : ""
+                  }`}
                 key={i + 1}
                 onClick={() => handleCategorySelect(i, el.category)}
                 onKeyDown={(e) => {
@@ -246,6 +251,21 @@ const UploadNFT = () => {
                 placeholder="Rare, Animated, etc."
                 onChange={(e) => setProperties(e.target.value)}
                 value={properties}
+              />
+            </div>
+          </div>
+
+          <div className={formStyle.Form_box_input}>
+            <label htmlFor="Price">Price</label>
+            <div className={formStyle.Form_box_input_box}>
+              <div className={formStyle.Form_box_input_box_icon}>
+                <AiTwotonePropertySafety />
+              </div>
+              <input
+                type="text"
+                placeholder="Enter price"
+                onChange={(e) => setPrice(e.target.value)}
+                value={price}
               />
             </div>
           </div>

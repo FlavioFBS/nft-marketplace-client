@@ -16,7 +16,7 @@ import Style from './SideBar.module.css';
 import images from '../../../img';
 import { Button } from '@/components/ComponentIndex';
 
-const SideBar = ({ setOpenSideMenu }) => {
+const SideBar = ({ setOpenSideMenu, connectWallet, currentAccount }) => {
   const [openDiscover, setOpenDiscover] = useState(false);
   const [openHelp, setOpenHelp] = useState(false);
 
@@ -87,7 +87,7 @@ const SideBar = ({ setOpenSideMenu }) => {
       <GrClose className={Style.sidebar_closeBtn} onClick={() => closeSidebar()} />
 
       <div className={Style.sidebar_box}>
-        <Image src={images.logo} alt='logo' width={150} height={150} priority/>
+        <Image src={images.logo} alt='logo' width={150} height={150} priority />
         <p>Discover the most outstading articles on all
           topcis of NFT & your own stories and share them
         </p>
@@ -155,8 +155,15 @@ const SideBar = ({ setOpenSideMenu }) => {
       </div>
 
       <div className={Style.sidebar_button}>
-        <Button btnName='Create' handleClick={() => { }} />
-        <Button btnName='Connect wallet' handleClick={() => { }} />
+        {currentAccount == '' || currentAccount == undefined || currentAccount == null ?
+          <Button btnName='Connect wallet' handleClick={() => { connectWallet() }} /> :
+          // <Button btnName='Create' handleClick={() => { }} />
+          (
+            <Link href={{ pathname: '/upload-nft' }}>
+              <Button btnName='Create' handleClick={() => { }} />
+            </Link>
+          )
+        }
       </div>
     </div>
   )

@@ -39,6 +39,7 @@ import walletProviderMetamask from './provider-metamask.png';
 import walletProviderCoinbase from './provider-coinbase.png';
 import walletProviderWalletConnect from './provider-walletconnect.png';
 import walletProviderFortmatic from './provider-fortmatic.jpg';
+import upload from './upload.jpg';
 
 export default {
   NFTVideo,
@@ -91,4 +92,5 @@ export default {
   walletProviderMetamask,
   walletProviderCoinbase,
   walletProviderWalletConnect,
+  upload
 };
