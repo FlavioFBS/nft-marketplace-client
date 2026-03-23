@@ -28,10 +28,26 @@ const Dropzone = (
 
   const onDrop = useCallback(async (acceptedFiles) => {
     const file = acceptedFiles[0];
-    const url = await uploadToIPFS(file);
-    setFileUrl(url);
-    setImage(url);
-  }, []);
+    if (!file) return;
+
+    if (!name || !description) {
+      alert('Por favor, completa el nombre y la descripción antes de subir la imagen.');
+      return;
+    }
+
+    try {
+      const metadataUrl = await uploadToIPFS(file, name, description);
+      if (metadataUrl) {
+        // Convertir la URL IPFS a gateway HTTP para mostrar
+        const imageCid = metadataUrl.replace('ipfs://', '');
+        const httpUrl = `https://infura-ipfs.io/ipfs/${imageCid}`;
+        setFileUrl(httpUrl);
+        setImage(metadataUrl);
+      }
+    } catch (error) {
+      console.error('Error uploading:', error);
+    }
+  }, [name, description, uploadToIPFS]);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,

@@ -62,4 +62,14 @@ npx hardhat ignition deploy ./ignition/modules/Marketplace.js --network localhos
 
 # Console 3:
 npm run dev
+
+# Deploy sepolia
+npx hardhat ignition deploy ignition/modules/NFTMarketplace.js --network sepolia
+
+# Verificar contrato
+# 0xeaa98f35478563F6B077EAa03CBE765aECD87160
+
+npx hardhat verify --network sepolia <DIRECCION_DEL_CONTRATO>
+
+
 ```

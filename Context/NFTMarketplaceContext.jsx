@@ -16,7 +16,10 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { createQueryClient } from '@/config/queryClient';
 import { NFTMarketplaceAbi, NFTMarketplaceAddress } from './constans';
 import { createHelia } from 'helia';
-import { json } from '@helia/json'
+import { json } from '@helia/json';
+import axios from 'axios';
+import { unixfs } from '@helia/unixfs';
+import { create } from 'ipfs-http-client';
 
 // Wagmi config
 const config = createConfig({
@@ -44,6 +47,8 @@ const fetchContract = (signerOrProvider) => {
 // connecting with smart contract
 const connectToContract = async (signer) => {
   try {
+    console.log('connectToContract...');
+    
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
     console.log({ signer });
@@ -60,39 +65,48 @@ const connectToContract = async (signer) => {
 function MarketplaceContent({ children }) {
   const titleData = 'Hero Section Title';
   const { address, isConnecting, isDisconnected } = useAccount();
-  const [helia, setHelia] = useState(null);
-  const [heliaJson, setHeliaJson] = useState(null);
+  // const [helia, setHelia] = useState(null);
+  // const [heliaJson, setHeliaJson] = useState(null);
 
-  useEffect(() => {
-    const initHelia = async () => {
-      if (helia) return;
-      try {
-        const heliaNode = await createHelia();
-        const j = json(heliaNode);
-        setHelia(heliaNode);
-        setHeliaJson(j);
-        console.log('Helia IPFS node initialized');
+  const projectId = process.env.NEXT_PUBLIC_INFURA_PROJECT_ID;
+  const projectSecret = process.env.NEXT_PUBLIC_INFURA_PROJECT_SECRET;
+  const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
 
-      } catch (error) {
-        console.error('Error initializing Helia IPFS node:', error);
-      }
-    };
-    initHelia();
-  }, []);
 
   // useEffect(() => {
-  //   let account = '-'
-  //   try {
-  //     if (!window.ethereum) return 'Install MetaMask';
+  //   const initHelia = async () => {
+  //     if (helia) return;
+  //     try {
+  //       const heliaNode = await createHelia({
+  //         // Configuración básica para navegador
+  //         libp2p: {
+  //           addresses: {
+  //             listen: []
+  //           }
+  //         }
+  //       });
+  //       const j = json(heliaNode);
+  //       setHelia(heliaNode);
+  //       setHeliaJson(j);
+  //       console.log('Helia IPFS node initialized successfully');
 
-  //     const accounts = window.ethereum.request({ method: 'eth_accounts' })
-  //       .then(accounts => {
-  //         console.log('metamask-address: ', accounts[0]);
-  //       })
-  //   } catch (error) {
-  //     console.error("Error checking wallet connection:", error);
-  //   }
-  // }, [address]);
+  //     } catch (error) {
+  //       console.error('Error initializing Helia IPFS node:', error);
+  //       setHelia(null);
+  //       setHeliaJson(null);
+  //     }
+  //   };
+  //   initHelia();
+  // }, []);
+  
+   const client = create({
+    host: 'ipfs.infura.io',
+    port: 5001,
+    protocol: 'https',
+    headers: {
+      authorization: auth,
+    },
+  });
 
   const checkContract = async () => {
     const contract = await connectToContract();
@@ -121,30 +135,34 @@ function MarketplaceContent({ children }) {
 
 
   const uploadToIPFS = async (image, name, description) => {
+    console.log('uploadToIPFS called with:', { image, name, description });
+    
     if (!image || !name || !description) {
       console.error('Missing required data for IPFS upload');
-      return
+      return;
     }
-    try {
-      // upload image to IPFS
-      const imageBuffer = await image.arrayBuffer();
-      const imageCid = await helia.blockstore.put(new Uint8Array(imageBuffer));
-      const imageUrl = `ipfs://${imageCid.toString()}`;
-      console.log('Image uploaded to IPFS: ', imageUrl);
 
-      // create and upload metadata JSON
+    try {
+      // 1. Subir imagen a IPFS
+      const imageBuffer = await image.arrayBuffer();
+      const imageResult = await client.add(new Uint8Array(imageBuffer));
+      const imageUrl = `ipfs://${imageResult.path}`;
+      console.log('Image uploaded to IPFS:', imageUrl);
+
+      // 2. Crear y subir metadatos JSON
       const metadata = {
         name,
         description,
         image: imageUrl,
       };
-      const metadataCid = await heliaJson.add(metadata);
-      const metadataUrl = `ipfs://${metadataCid.toString()}`;
-      console.log('Metadata uploaded to IPFS: ', metadataUrl);
+
+      const metadataResult = await client.add(JSON.stringify(metadata));
+      const metadataUrl = `ipfs://${metadataResult.path}`;
+      console.log('Metadata uploaded to IPFS:', metadataUrl);
 
       return metadataUrl;
     } catch (error) {
-      console.error('Error uploading image to IPFS:', error);
+      console.error('Error uploading to IPFS:', error);
     }
   }
 
@@ -152,13 +170,12 @@ function MarketplaceContent({ children }) {
     const { name, description, price } = formInput;
     if (!name || !description || !price || !fileUrl) return console.log('Missing data');
 
-    const data = JSON.stringify({ name, description, image: fileUrl });
-
     try {
-      const added = await heliaJson.add(data);
-      const url = `ipfs://${added.toString()}`;
-      // const url = `http://ipfs.infura.io/ipfs/${added.path}`;
-      console.log('Metadata URL: ', url);
+      // Ya no necesitas usar heliaJson, usa el cliente de Infura
+      const data = JSON.stringify({ name, description, image: fileUrl });
+      const added = await client.add(data);
+      const url = `ipfs://${added.path}`;
+      console.log('Metadata URL:', url);
       await createSale(url, price);
     } catch (error) {
       console.error('Error uploading metadata to IPFS:', error);
