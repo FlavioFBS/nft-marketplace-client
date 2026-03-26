@@ -1,5 +1,5 @@
 'use client'
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 
@@ -26,32 +26,41 @@ const Dropzone = (
 
   const [fileUrl, setFileUrl] = useState(null);
 
+  // cleanup URL object when component unmounts or when fileUrl changes
+  useEffect(() => {
+    return () => {
+      if (fileUrl) {
+        URL.revokeObjectURL(fileUrl);
+      }
+    };
+  }, [fileUrl]);
+
   const onDrop = useCallback(async (acceptedFiles) => {
     const file = acceptedFiles[0];
     if (!file) return;
 
-    if (!name || !description) {
-      alert('Por favor, completa el nombre y la descripción antes de subir la imagen.');
-      return;
+    // cleanup previous URL if it exists to prevent memory leaks
+    if (fileUrl) {
+      URL.revokeObjectURL(fileUrl);
     }
 
-    try {
-      const metadataUrl = await uploadToIPFS(file, name, description);
-      if (metadataUrl) {
-        // Convertir la URL IPFS a gateway HTTP para mostrar
-        const imageCid = metadataUrl.replace('ipfs://', '');
-        const httpUrl = `https://infura-ipfs.io/ipfs/${imageCid}`;
-        setFileUrl(httpUrl);
-        setImage(metadataUrl);
-      }
-    } catch (error) {
-      console.error('Error uploading:', error);
-    }
-  }, [name, description, uploadToIPFS]);
+    // Create local URL for preview (do not upload to IPFS yet)
+    const localUrl = URL.createObjectURL(file);
+    setFileUrl(localUrl);
+    
+    // Save the original file for later upload
+    setImage(file);
+    
+    console.log('✅ File selected for preview:', file.name);
+    console.log('📁 File size:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+    console.log('🎯 Ready for upload when user clicks "Upload NFT"');
+  }, [setImage, fileUrl]);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
-    accept: 'image/*',
+    accept: {
+      'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.webp']
+    },
     maxFiles: 1,
     maxSize: 50000000 // 50MB
   });

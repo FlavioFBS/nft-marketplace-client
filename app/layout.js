@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "../styles/globals.css";
 import { Footer, NavBar } from '../components/ComponentIndex';
 import { NFTMarketplaceProvider } from "@/Context/NFTMarketplaceContext";
+import ClientErrorSuppressor from "../components/ClientErrorSuppressor";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,6 +15,7 @@ export default function RootLayout({ children }) {
   return (
     <html suppressHydrationWarning lang="en">
       <body className={inter.className}>
+        <ClientErrorSuppressor />
         <NFTMarketplaceProvider>
           <NavBar />
           {children}

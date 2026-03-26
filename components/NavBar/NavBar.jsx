@@ -19,7 +19,7 @@ const NavBar = () => {
   const [notification, setNotification] = useState(false)
   const [profile, setProfile] = useState(false)
   const [openSideMenu, setOpenSideMenu] = useState(false)
-  const { checkContract, checkIfWalletConnected, address: currentAccount, isConnecting, isDisconnected } = useContext(NFTMarketplaceContext);
+  const { checkContract, connectWalletAndCheck, checkIfWalletConnected, address: currentAccount, isConnecting, isDisconnected } = useContext(NFTMarketplaceContext);
 
 
   const openMenu = (e) => {
@@ -128,10 +128,11 @@ const NavBar = () => {
           {/* CREATE BUTTON SECTION */}
           <div className={Style.navbar_container_right_button}>
             {currentAccount == '' || currentAccount == undefined || currentAccount == null ?
-              <Button btnName='Connect' handleClick={checkContract} /> :
+              <Button btnName='Connect' handleClick={connectWalletAndCheck} /> :
               (
                 <Link href={{ pathname: '/upload-nft' }}>
                   <Button btnName='Create' handleClick={() => { }} />
+                    <span>{currentAccount}</span>
                 </Link>
               )
             }
@@ -166,7 +167,7 @@ const NavBar = () => {
         <div className={Style.sidebar}>
           <SideBar 
             setOpenSideMenu={setOpenSideMenu} 
-            connectWallet={checkContract}
+            connectWallet={connectWalletAndCheck}
             currentAccount={currentAccount}
           />
         </div>

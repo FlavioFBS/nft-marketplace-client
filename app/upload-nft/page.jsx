@@ -9,7 +9,11 @@ import { NFTMarketplaceContext } from "@/Context/NFTMarketplaceContext";
 
 const Page = () => {
 
-  const { uploadToIPFS, createNFT } = useContext(NFTMarketplaceContext);
+  const { uploadToIPFS, createNFT, checkContract } = useContext(NFTMarketplaceContext);
+
+  useEffect(() => {
+    checkContract();
+  }, []);
 
   return (
     <div className={Style.uploadNFT}>

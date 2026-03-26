@@ -27,6 +27,7 @@ const UploadNFT = ({ uploadToIPFS, createNFT }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [errors, setErrors] = useState({});
   const [image, setImage] = useState(null);
+  const [uploadStage, setUploadStage] = useState('');
 
   const router = useRouter();
 
@@ -35,18 +36,57 @@ const UploadNFT = ({ uploadToIPFS, createNFT }) => {
     if (!name.trim()) newErrors.name = "Item name is required";
     if (!description.trim()) newErrors.description = "Description is required";
     if (!category) newErrors.category = "Please select a category";
+    if (!price.trim()) newErrors.price = "Price is required";
+    if (!image) newErrors.image = "Please select an image";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleUpload = async () => {
-    if (validateForm()) {
-      setIsUploading(true);
+    if (!validateForm() || !image) {
+      if (!image) alert('Please select an image first');
+      return;
+    }
 
-      await createNFT(name, price, image, description, router, website, royalties, fileSize, category, properties);
+    if (!(image instanceof File)) {
+      alert('Invalid file selected. Please select a new image.');
+      return;
+    }
+
+    setIsUploading(true);
+    
+    try {
+      console.log('🚀 Starting NFT upload process...');
+      
+      // Step 1: Upload file to IPFS and get metadata URL
+      setUploadStage('Uploading to IPFS...');
+      console.log('📤 Uploading to IPFS...');
+      
+      const ipfsResult = await uploadToIPFS(image, name, description);
+      
+      if (!ipfsResult) {
+        throw new Error('Failed to upload to IPFS');
+      }
+      
+      console.log('✅ IPFS Upload successful:', ipfsResult.metadataUrl);
+      
+      // Step 2: Create NFT on blockchain with IPFS metadata
+      setUploadStage('Creating NFT on blockchain...');
+      console.log('🔗 Creating NFT on blockchain...');
+      
+      await createNFT(name, price, ipfsResult.metadataUrl, description, router);
+      
+      setUploadStage('');
+      alert("🎉 NFT uploaded successfully!");
+      console.log('🎯 NFT creation completed successfully!');
+      
+    } catch (error) {
+      console.error('❌ Error uploading NFT:', error);
+      alert('Error uploading NFT. Check console for details.');
+      setUploadStage('');
+    } finally {
       setIsUploading(false);
-      alert("NFT uploaded successfully!");
     }
   };
 
@@ -109,14 +149,14 @@ const UploadNFT = ({ uploadToIPFS, createNFT }) => {
           <input
             type="text"
             placeholder="Enter NFT name"
-            className={`${formStyle.Form_box_input_userName} ${errors.itemName ? ExtraStyle.error : ''}`}
+            className={`${formStyle.Form_box_input_userName} ${errors.name ? ExtraStyle.error : ''}`}
             onChange={(e) => {
               setName(e.target.value);
-              if (errors.itemName) setErrors(prev => ({ ...prev, itemName: null }));
+              if (errors.name) setErrors(prev => ({ ...prev, name: null }));
             }}
             value={name}
           />
-          {errors.itemName && <span className={ExtraStyle['error-message']}>{errors.itemName}</span>}
+          {errors.name && <span className={ExtraStyle['error-message']}>{errors.name}</span>}
         </div>
 
         <div className={formStyle.Form_box_input}>
@@ -256,24 +296,30 @@ const UploadNFT = ({ uploadToIPFS, createNFT }) => {
           </div>
 
           <div className={formStyle.Form_box_input}>
-            <label htmlFor="Price">Price</label>
+            <label htmlFor="Price">Price *</label>
             <div className={formStyle.Form_box_input_box}>
               <div className={formStyle.Form_box_input_box_icon}>
                 <AiTwotonePropertySafety />
               </div>
               <input
-                type="text"
-                placeholder="Enter price"
-                onChange={(e) => setPrice(e.target.value)}
+                type="number"
+                step="0.001"
+                placeholder="Enter price in ETH"
+                className={errors.price ? ExtraStyle.error : ''}
+                onChange={(e) => {
+                  setPrice(e.target.value);
+                  if (errors.price) setErrors(prev => ({ ...prev, price: null }));
+                }}
                 value={price}
               />
             </div>
+            {errors.price && <span className={ExtraStyle['error-message']}>{errors.price}</span>}
           </div>
         </div>
 
         <div className={Style.upload_box_btn}>
           <Button
-            btnName={isUploading ? "Uploading..." : "Upload NFT"}
+            btnName={isUploading ? uploadStage || "Processing..." : "Upload NFT"}
             handleClick={handleUpload}
             classStyle={Style.upload_box_btn_style}
             disabled={isUploading}
