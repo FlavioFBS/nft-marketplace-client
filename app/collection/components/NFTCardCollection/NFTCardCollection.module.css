@@ -3,11 +3,11 @@
     margin:  0 auto;
 
     display: grid;
-    /* grid-template-columns: repeat(4, 1fr); */
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));;
-    gap: 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
     margin-bottom: 14rem;
     margin-top: 100px;
+    padding: 0 1rem;
 }
 
 .NFTCardCollection_box{
@@ -16,6 +16,10 @@
     transition: all .3s ease-in;
     border-radius: 1rem;
     border: 1px solid rgb(216, 216, 216);
+    background: white;
+    overflow: hidden;
+    min-height: 500px;
+    grid-template-rows: 300px auto auto auto;
 }
 
 .NFTCardCollection_box:hover{
@@ -58,17 +62,44 @@
     position: relative;
     width: 100%;
     height: 300px;
+    min-height: 300px;
+    max-height: 300px;
     overflow: hidden;
     border-radius: 1rem;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .NFTCardCollection_box_img_img{
     border-radius: 1rem;
-
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
     object-position: center;
+    transition: transform 0.3s ease;
+    max-width: 100%;
+    max-height: 100%;
+    
+    width: auto;
+    height: auto;
+}
+
+.NFTCardCollection_box_img_img:global(.small-image) {
+    object-fit: none !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+}
+
+.NFTCardCollection_box_img_img:global(.large-image) {
+    object-fit: contain !important; 
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.NFTCardCollection_box:hover .NFTCardCollection_box_img_img{
+    transform: scale(1.05);
 }
 
 .NFTCardCollection_box_info{
@@ -96,6 +127,52 @@
     align-items: flex-end;
     line-height: 0;
     padding: 1rem;
+}
+
+@media screen and (max-width: 1200px) {
+    .NFTCardCollection {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        width: 90%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .NFTCardCollection {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        width: 95%;
+        margin-top: 50px;
+    }
+    
+    .NFTCardCollection_box_img {
+        height: 250px;
+        min-height: 250px;
+        max-height: 250px;
+    }
+    
+    .NFTCardCollection_box {
+        min-height: 400px;
+        grid-template-rows: 250px auto auto auto;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .NFTCardCollection {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        width: 98%;
+    }
+    
+    .NFTCardCollection_box_img {
+        height: 200px;
+        min-height: 200px;
+        max-height: 200px;
+    }
+    
+    .NFTCardCollection_box {
+        min-height: 350px;
+        grid-template-rows: 200px auto auto auto;
+    }
 }
 
 .NFTCardCollection_box_price_box p{

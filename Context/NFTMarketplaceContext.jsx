@@ -51,7 +51,7 @@ function MarketplaceContent({ children }) {
       return true;
     } catch (error) {
       console.error('❌ Failed to switch network:', error);
-      
+
       // Error by user rejection
       if (error.code === 4001) {
         console.log('ℹ️ User rejected network switch');
@@ -94,7 +94,7 @@ function MarketplaceContent({ children }) {
 
       const contract = await connectToContract();
       console.log('✅ Contract connected successfully');
-      
+
       if (!contract) {
         console.log('❌ Contract connection failed')
         return
@@ -113,7 +113,7 @@ function MarketplaceContent({ children }) {
       if (!address || isDisconnected) {
         console.log('🔌 No wallet connected, connecting first...');
         await connectWallet();
-        
+
         setTimeout(() => {
           console.log('⏰ Re-checking after wallet connection...');
           checkContract();
@@ -124,7 +124,7 @@ function MarketplaceContent({ children }) {
       }
     } catch (error) {
       console.error('❌ connectWalletAndCheck failed:', error);
-      
+
       if (error.message.includes('Wrong network')) {
         alert(`❌ Network Error: ${error.message}`);
       }
@@ -140,7 +140,7 @@ function MarketplaceContent({ children }) {
         isDisconnected,
         hasWalletClient: !!walletClient
       });
-      
+
       if (!walletClient) {
         const error = 'Wallet client not available. Please connect your wallet.';
         console.error('❌', error);
@@ -162,7 +162,7 @@ function MarketplaceContent({ children }) {
       console.log('✅ All wallet checks passed. Proceeding with contract connection...');
 
       let provider = new ethers.BrowserProvider(walletClient.transport);
-      
+
       const network = await provider.getNetwork();
       console.log('🌐 Network info:', {
         name: network.name,
@@ -170,16 +170,16 @@ function MarketplaceContent({ children }) {
         expectedChainId: sepolia.id,
         isCorrectNetwork: network.chainId === BigInt(sepolia.id)
       });
-      
+
       if (network.chainId !== BigInt(sepolia.id)) {
         console.warn('⚠️ Wrong network! Expected Sepolia (11155111), got:', network.chainId.toString());
         console.log('🔄 Attempting to switch to Sepolia...');
-        
+
         const switched = await switchToSepolia();
         if (!switched) {
           throw new Error(`Wrong network! Please switch to Sepolia testnet manually. Current: ${network.name} (${network.chainId}), Expected: Sepolia (${sepolia.id})`);
         }
-        
+
         provider = new ethers.BrowserProvider(walletClient.transport);
         const newNetwork = await provider.getNetwork();
         console.log('✅ Network after switch:', {
@@ -187,10 +187,10 @@ function MarketplaceContent({ children }) {
           chainId: newNetwork.chainId.toString()
         });
       }
-      
+
       const signer = await provider.getSigner(address);
       const signerAddress = await signer.getAddress();
-      
+
       console.log('✅ Signer details:', {
         expectedAddress: address,
         signerAddress: signerAddress,
@@ -199,12 +199,12 @@ function MarketplaceContent({ children }) {
 
       const contract = fetchContract(signer);
       console.log('📄 Contract instance created for:', NFTMarketplaceAddress);
-      
+
       // Basic test: Check if contract responds
       console.log('🧪 Testing basic contract connection...');
       const contractAddress = await contract.getAddress();
       console.log('✅ Contract responds! Address confirmed:', contractAddress);
-      
+
       return contract;
     } catch (error) {
       console.error("❌ connectToContract error:", error);
@@ -219,10 +219,27 @@ function MarketplaceContent({ children }) {
     return `Wallet Connected: ${address}`;
   }
 
+  // Helper function to convert IPFS URLs to HTTP gateway URLs
+  const convertIpfsUrl = (url) => {
+    if (!url) return url;
+
+    if (url.startsWith('ipfs://')) {
+      const hash = url.replace('ipfs://', '');
+      return `https://gateway.pinata.cloud/ipfs/${hash}`;
+    }
+
+    if (url.startsWith('/ipfs/')) {
+      const hash = url.replace('/ipfs/', '');
+      return `https://gateway.pinata.cloud/ipfs/${hash}`;
+    }
+
+    return url;
+  };
+
 
   const uploadToIPFS = async (image, name, description) => {
     console.log('uploadToIPFS called with:', { image, name, description });
-    
+
     if (!image || !name || !description) {
       console.error('Missing required data for IPFS upload');
       return;
@@ -240,11 +257,11 @@ function MarketplaceContent({ children }) {
         size: (image.size / 1024 / 1024).toFixed(2) + ' MB',
         type: image.type
       });
-      
+
       // 1. Upload image to Pinata
       const imageFormData = new FormData();
       imageFormData.append('file', image);
-      
+
       const imageOptions = JSON.stringify({
         cidVersion: 0,
       });
@@ -302,7 +319,7 @@ function MarketplaceContent({ children }) {
       };
     } catch (error) {
       console.error('❌ Error uploading to IPFS:', error);
-      
+
       if (error.name === 'TypeError' && error.message.includes('Failed to fetch')) {
         console.error('🚫 Network error. Check your internet connection and Pinata API keys.');
       }
@@ -311,7 +328,7 @@ function MarketplaceContent({ children }) {
 
   const createNFT = async (name, price, fileUrl, description, router) => {
     console.log('Creating NFT with:', { name, price, fileUrl, description });
-    
+
     if (!name || !description || !price || !fileUrl) {
       console.log('Missing data for NFT creation');
       return;
@@ -335,33 +352,33 @@ function MarketplaceContent({ children }) {
         isReselling: !!isReselling,
         tokenId: id
       });
-      
+
       // Verify that we have a wallet connected before proceeding
       if (!address || isDisconnected || !walletClient) {
         throw new Error('Wallet not connected properly. Please connect your wallet and try again.');
       }
-      
+
       const price = ethers.parseUnits(formInputPrice, 'ether');
       console.log('✅ Price parsed:', price.toString(), 'wei');
-      
+
       const contract = await connectToContract();
       if (!contract) {
         throw new Error('Failed to connect to contract');
       }
-      
+
       // Verify contract details before calling getListingPrice
       console.log('📋 Contract details:');
       console.log('  - Contract address:', await contract.getAddress());
       console.log('  - Signer address:', await contract.runner.getAddress());
       console.log('  - Network:', await contract.runner.provider.getNetwork().then(n => ({ name: n.name, chainId: n.chainId.toString() })));
-      
+
       console.log('💸 Getting listing price from contract...');
       const listingPrice = await contract.getListingPrice();
       console.log('✅ Listing price retrieved:', {
         raw: listingPrice.toString(),
         formatted: ethers.formatEther(listingPrice) + ' ETH'
       });
-      
+
       console.log('Creating transaction...');
       const transaction = !isReselling
         ? await contract.createToken(url, price, { value: listingPrice.toString() })
@@ -370,7 +387,7 @@ function MarketplaceContent({ children }) {
       console.log('Transaction sent, waiting for confirmation...');
       await transaction.wait();
       console.log('Transaction confirmed!', transaction.hash);
-      
+
       return transaction;
     } catch (error) {
       console.error('Error creating sale:', error);
@@ -380,32 +397,91 @@ function MarketplaceContent({ children }) {
 
   const fetchNFTs = async () => {
     try {
+      console.log('📊 fetchNFTs called. Wallet state:', {
+        address: !!address,
+        isDisconnected,
+        isConnecting,
+        hasWalletClient: !!walletClient
+      });
+
+      if (!address || isDisconnected) {
+        console.warn('⚠️ Cannot fetch NFTs: wallet not connected');
+        console.info('💡 Please connect your wallet to see marketplace NFTs');
+        return [];
+      }
+
+      if (isConnecting) {
+        console.log('⏳ Wallet is connecting, waiting...');
+        await new Promise(resolve => setTimeout(resolve, 1500));
+      }
+
+      // If walletClient is not ready yet, wait a bit more for it to initialize
+      if (!walletClient) {
+        console.log('⏳ Waiting for wallet client to initialize...');
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        if (!walletClient) {
+          console.warn('⚠️ Wallet client still not available after waiting');
+          console.info('💡 Please try refreshing the page or reconnecting your wallet');
+          return [];
+        }
+      }
+
+      console.log('🔗 Wallet fully ready, proceeding to fetch NFTs...');
       const contract = await connectToContract();
       const data = await contract.fetchMarketItem();
 
-      const items = await Promise.all(data.map(async i => {
-        const tokenUri = await contract.tokenURI(i.tokenId);
-        const {
-          data: {image, name, description}
-        } = await axios.get(tokenUri);
+      console.log('📄 Raw contract response:', data);
+      console.log('📊 Response length:', data.length);
 
-        // const meta = await axios.get(tokenUri);
-        let price = ethers.formatUnits(i.price.toString(), 'ether');
+      const items = await Promise.all(data.map(async (i, index) => {
+        console.log(`🎯 Processing item ${index}:`, {
+          raw: i,
+          tokenId: i[0],
+          seller: i[1],
+          owner: i[2],
+          price: i[3],
+          sold: i[4]
+        });
+
+        const tokenId = Number(i[0]);
+        console.log('🔢 TokenId converted:', tokenId);
+
+        const tokenUri = await contract.tokenURI(tokenId);
+        console.log('🔗 TokenURI fetched:', tokenUri);
+
+        const httpUrl = convertIpfsUrl(tokenUri);
+        console.log('🌐 Converted URL for axios:', httpUrl);
+
+        const {
+          data: { image, name, description }
+        } = await axios.get(httpUrl);
+
+        // Convert BigInt price to ether string
+        let price = ethers.formatUnits(i[3].toString(), 'ether');
+
         let item = {
           price,
-          tokenId: i.tokenId.toNumber(),
-          seller: i.seller,
-          owner: i.owner,
-          image: tokenUri,
+          tokenId: tokenId,
+          seller: i[1],
+          owner: i[2],
+          image: convertIpfsUrl(image),
           name,
           description,
-          tokenUri
+          tokenUri: httpUrl,
+          sold: i[4]
+
         };
+
+        console.log('✅ Processed item:', item);
         return item;
       }));
+
+      console.log('✅ Successfully fetched', items.length, 'NFTs from marketplace');
       return items;
     } catch (error) {
-      console.error('Error fetching NFTs:', error);
+      console.error('❌ Error fetching NFTs:', error);
+      return [];
     }
   }
 
@@ -416,23 +492,45 @@ function MarketplaceContent({ children }) {
         ? await contract.fetchItemsListed()
         : await contract.fetchMyNFTs();
 
-      const items = await Promise.all(data.map(async i => {
-        const tokenUri = await contract.tokenURI(i.tokenId);
-        const {
-          data: {image, name, description}
-        } = await axios.get(tokenUri);
+      console.log(`📄 Raw ${type} response:`, data);
 
-        let price = ethers.formatUnits(i.price.toString(), 'ether');
+      const items = await Promise.all(data.map(async (i, index) => {
+        console.log(`🎯 Processing ${type} item ${index}:`, {
+          raw: i,
+          tokenId: i[0],
+          seller: i[1],
+          owner: i[2],
+          price: i[3],
+          sold: i[4]
+        });
+
+        const tokenId = Number(i[0]);
+
+        const tokenUri = await contract.tokenURI(tokenId);
+        console.log(`🔗 ${type} TokenURI:`, tokenUri);
+
+        const httpUrl = convertIpfsUrl(tokenUri);
+        console.log(`🌐 ${type} Converted URL:`, httpUrl);
+
+        const {
+          data: { image, name, description }
+        } = await axios.get(httpUrl);
+
+        let price = ethers.formatUnits(i[3].toString(), 'ether');
+
         let item = {
           price,
-          tokenId: i.tokenId.toNumber(),
-          seller: i.seller,
-          owner: i.owner,
-          image: tokenUri,
+          tokenId: tokenId,
+          seller: i[1],
+          owner: i[2],
+          image: convertIpfsUrl(image),
           name,
           description,
-          tokenUri
+          tokenUri: httpUrl,
+          sold: i[4]
         };
+
+        console.log(`✅ Processed ${type} item:`, item);
         return item;
       }));
       return items;
@@ -445,11 +543,15 @@ function MarketplaceContent({ children }) {
     try {
       const contract = await connectToContract();
       const price = ethers.parseUnits(nft.price.toString(), 'ether');
+      console.log('💰 Buying NFT:', { tokenId: nft.tokenId, price: price.toString() });
+
       const transaction = await contract.createMarketSale(nft.tokenId, { value: price });
+      console.log('🔄 Transaction sent:', transaction.hash);
+
       await transaction.wait();
-      console.log('NFT purchased successfully');
+      console.log('✅ NFT purchased successfully');
     } catch (error) {
-      console.log('Error while buying NFT: ', error);
+      console.error('❌ Error while buying NFT:', error);
     }
   }
 
@@ -465,6 +567,7 @@ function MarketplaceContent({ children }) {
       address,
       isConnecting,
       isDisconnected,
+      walletClient,
       uploadToIPFS,
       createNFT,
       fetchNFTs,
