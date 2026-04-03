@@ -48,10 +48,16 @@ const NFTCardCollection = ({ NFTData }) => {
 	};
 
 	const handleIPFSUrl = (url) => {
-		if (url?.startsWith('ipfs://')) {
+		// Add type checking to prevent errors
+		if (!url || typeof url !== 'string') {
+			console.warn('Invalid URL passed to handleIPFSUrl:', url);
+			return images.nft_image_1; // Return fallback image
+		}
+		
+		if (url.startsWith('ipfs://')) {
 			return url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/');
 		}
-		return url || images.nft_image_1;
+		return url;
 	};
 
 	const handleImageError = (tokenId, imageUrl) => {
