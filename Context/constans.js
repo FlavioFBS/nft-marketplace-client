@@ -1,5 +1,5 @@
 
 import nftMarketplace from './NFTMarketplace.json';
 
-export const NFTMarketplaceAddress = '0xeaa98f35478563F6B077EAa03CBE765aECD87160' // from hardhat local network
+export const NFTMarketplaceAddress = '0x5006CCBB92f3f6a804971b6451B74270C15b5aB2' // from hardhat local network
 export const NFTMarketplaceAbi = nftMarketplace.abi;

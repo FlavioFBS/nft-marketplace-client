@@ -1,6 +1,7 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import {
   MdVerified,
   MdCloudUpload,
@@ -26,11 +27,13 @@ import img from '@/img'
 import { Button } from '@/components/ComponentIndex'
 import { NFTTabs } from '..'
 
+import { NFTMarketplaceContext } from '@/Context/NFTMarketplaceContext'
 
-const NFTDescription = () => {
+const NFTDescription = ({ nftData }) => {
   const [showSocial, setShowSocial] = useState(false);
   const [showNFTMenu, setShowNFTMenu] = useState(false);
   const [openTab, setOpenTabs] = useState(0);
+  const [authorUrl, setAuthorUrl] = useState('');
 
   const tabs = [
     {
@@ -64,6 +67,18 @@ const NFTDescription = () => {
       ]
     }
   ]
+
+  const { address: currentAccount, isConnecting, isDisconnected, walletClient, buyNFT, reSellNFT } = useContext(NFTMarketplaceContext);
+
+  useEffect(() => {
+    const nftAuthorUrl = `/author?${new URLSearchParams({
+      seller: nftData ? String(nftData.seller || '') : '',
+      owner: nftData ? String(nftData.owner || '') : '',
+      // description: isRealNFTData ? String(el.description || '') : `This is Clone #${i + 1}`,
+      // tokenUri: isRealNFTData ? String(el.tokenUri || '') : ''
+    }).toString()}`;
+    setAuthorUrl(nftAuthorUrl);
+  }, []);
 
   return (
     <div className={Style.NFTDescription}>
@@ -126,7 +141,7 @@ const NFTDescription = () => {
         </div>
 
         <div className={Style.NFTDescription_box_profile}>
-          <h1>BearX #1234</h1>
+          <h1>{nftData.name} #{nftData.tokenId}</h1>
           <div className={Style.NFTDescription_box_profile_box}>
             <div className={Style.NFTDescription_box_profile_box_left}>
               <Image
@@ -138,14 +153,16 @@ const NFTDescription = () => {
               />
               <div className={Style.NFTDescription_box_profile_box_left_info}>
                 <small>Creator</small>
-                <br />
-                <span>User sample name <MdVerified /> </span>
+                <Link href={authorUrl} className={Style.NFTDescription_box_profile_box_left_info_link}>
+                  <br />
+                  <span>User sample name <MdVerified /> </span>
+                </Link>
               </div>
             </div>
 
             <div className={Style.NFTDescription_box_profile_box_right}>
               <Image
-                src={img.user2}
+                src={img.creatorbackground1}
                 alt='profile'
                 width={40}
                 height={40}
@@ -153,64 +170,102 @@ const NFTDescription = () => {
               />
 
               <div className={Style.NFTDescription_box_profile_box_right_info}>
-                <small>Creator</small>
+                <small>Collection</small>
                 <br />
-                <span>User-Creator sample name <MdVerified /> </span>
+                <span>DBz - Gif <MdVerified /> </span>
               </div>
             </div>
           </div>
-        {/* </div> */}
+          {/* </div> */}
 
-        <div className={Style.NFTDescription_box_profile_biding}>
-          <p>
-            <MdVerified />
-            <span>Auction ending in: </span>
-          </p>
-          <div className={Style.NFTDescription_box_profile_biding_box_timer}>
-            {"02Days,02Hours,40Minutes,02Seconds".split(',').map((item, index) => (
-              <div className={Style.NFTDescription_box_profile_biding_box_timer_item} key={index}>
-                <p>{item.slice(0,2)}</p>
-                <span>{item.slice(2)}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className={Style.NFTDescription_box_profile_biding_box_price}>
-            <div className={Style.NFTDescription_box_profile_biding_box_price_bid}>
-              <small>Current Bid</small>
-              <p>1.000 ETH <span>(= $2,595)</span></p>
+          <div className={Style.NFTDescription_box_profile_biding}>
+            <p>
+              <MdVerified />
+              <span>Auction ending in: </span>
+            </p>
+            <div className={Style.NFTDescription_box_profile_biding_box_timer}>
+              {"02Days,02Hours,40Minutes,02Seconds".split(',').map((item, index) => (
+                <div className={Style.NFTDescription_box_profile_biding_box_timer_item} key={index}>
+                  <p>{item.slice(0, 2)}</p>
+                  <span>{item.slice(2)}</span>
+                </div>
+              ))}
             </div>
 
-            <br />
-            <span>[90 in stock]</span>
-          </div>
-          
-          <div className={Style.NFTDescription_box_profile_biding_box_button}>
-            <Button
-              icon={<FaWallet />}
-              btnName={"Place a bid"}
-              handleClick={() => {}}
-              classStyle={Style.button}
-            />
-            <Button
-              icon={<FaPercentage />}
-              btnName={"Make offer"}
-              handleClick={() => {}}
-              classStyle={Style.button}
-            />
-          </div>
-          <div className={Style.NFTDescription_box_profile_biding_box_tabs}>
-            {tabs.map((tab, index) => (
-              <button key={index} onClick={(e) => setOpenTabs(index)}>
-                {tab.text}
-              </button>
-            ))}
-          </div>
+            <div className={Style.NFTDescription_box_profile_biding_box_price}>
+              <div className={Style.NFTDescription_box_profile_biding_box_price_bid}>
+                <small>Current Bid</small>
+                <p>{nftData.price} ETH <span>(= $2,595)</span></p>
+              </div>
 
-          <div className={Style.NFTDescription_box_profile_biding_box_card}>
-            <NFTTabs dataTab={tabs[openTab].dataArray} icon={<MdVerified />} />
+              <br />
+              <span>[90 in stock]</span>
+            </div>
+
+            <div className={Style.NFTDescription_box_profile_biding_box_button}>
+              {!currentAccount || isDisconnected ? (
+                <div style={{
+                  textAlign: 'center',
+                  padding: '1rem',
+                  background: '#f8f9fa',
+                  border: '1px solid #dee2e6',
+                  borderRadius: '8px',
+                  margin: '1rem 0'
+                }}>
+                  <p style={{ color: '#6c757d', marginBottom: '0.5rem' }}>
+                    🔌 Connect your wallet to interact with this NFT
+                  </p>
+                  <small style={{ color: '#6c757d' }}>
+                    You need to connect your wallet to buy, list, or place bids
+                  </small>
+                </div>
+              ) : (currentAccount.toLowerCase() === (nftData.seller || '').toLowerCase()) ? (
+                <p>You cannot buy your own NFT</p>
+              ) : (currentAccount.toLowerCase() === (nftData.owner || '').toLowerCase()) ? (
+                <Button
+                  icon={<FaWallet />}
+                  btnName={"List on Marketplace"}
+                  handleClick={() => {
+                    const newPrice = prompt('Enter new price in ETH:', nftData.price);
+                    if (newPrice && newPrice > 0) {
+                      reSellNFT(nftData, newPrice);
+                    }
+                  }}
+                  classStyle={Style.button}
+                />
+              ) : (
+                <Button
+                  icon={<FaWallet />}
+                  btnName={"Buy NFT"}
+                  handleClick={() => buyNFT(nftData)}
+                  classStyle={Style.button}
+                />
+              )}
+              <Button
+                icon={<FaWallet />}
+                btnName={"Place a bid"}
+                handleClick={() => { }}
+                classStyle={Style.button}
+              />
+              <Button
+                icon={<FaPercentage />}
+                btnName={"Make offer"}
+                handleClick={() => { }}
+                classStyle={Style.button}
+              />
+            </div>
+            <div className={Style.NFTDescription_box_profile_biding_box_tabs}>
+              {tabs.map((tab, index) => (
+                <button key={index} onClick={(e) => setOpenTabs(index)}>
+                  {tab.text}
+                </button>
+              ))}
+            </div>
+
+            <div className={Style.NFTDescription_box_profile_biding_box_card}>
+              <NFTTabs dataTab={tabs[openTab].dataArray} icon={<MdVerified />} />
+            </div>
           </div>
-        </div>
 
         </div>
 

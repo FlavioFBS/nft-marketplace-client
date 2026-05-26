@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { BsImage } from 'react-icons/bs'
 import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai'
 import { MdTimer, MdVerified } from 'react-icons/md'
+import Link from 'next/link'
 
 import Style from './NFTCardCollection.module.css'
 import { LikeProfile } from '@/components/ComponentIndex'
@@ -31,7 +32,7 @@ const NFTCardCollection = ({ NFTData }) => {
 			setLoading(true);
 			console.log('🔍 Loading real NFTs for collection...');
 			const fetchedNFTs = await fetchNFTs();
-			
+
 			if (fetchedNFTs && fetchedNFTs.length > 0) {
 				console.log('✅ Real NFTs loaded:', fetchedNFTs.length);
 				setRealNFTs(fetchedNFTs);
@@ -53,7 +54,7 @@ const NFTCardCollection = ({ NFTData }) => {
 			console.warn('Invalid URL passed to handleIPFSUrl:', url);
 			return images.nft_image_1; // Return fallback image
 		}
-		
+
 		if (url.startsWith('ipfs://')) {
 			return url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/');
 		}
@@ -70,17 +71,17 @@ const NFTCardCollection = ({ NFTData }) => {
 		const img = event.target;
 		const naturalWidth = img.naturalWidth;
 		const naturalHeight = img.naturalHeight;
-		
+
 		// Store image dimensions for smart rendering decisions
-		setImageDimensions(prev => ({ 
-			...prev, 
-			[tokenId]: { 
-				width: naturalWidth, 
+		setImageDimensions(prev => ({
+			...prev,
+			[tokenId]: {
+				width: naturalWidth,
 				height: naturalHeight,
 				aspectRatio: naturalWidth / naturalHeight
-			} 
+			}
 		}));
-		
+
 		setImageLoading(prev => ({ ...prev, [tokenId]: false }));
 		console.log(`📐 Image ${tokenId} loaded:`, { width: naturalWidth, height: naturalHeight });
 	};
@@ -88,19 +89,19 @@ const NFTCardCollection = ({ NFTData }) => {
 	const getImageClassName = (tokenId) => {
 		const containerSize = 300;
 		const dimensions = imageDimensions[tokenId];
-		
+
 		let className = Style.NFTCardCollection_box_img_img;
-		
+
 		if (dimensions) {
 			const { width, height } = dimensions;
-			
+
 			if (width <= containerSize && height <= containerSize) {
 				className += ' small-image';
 			} else {
 				className += ' large-image';
 			}
 		}
-		
+
 		return className;
 	};
 
@@ -121,8 +122,8 @@ const NFTCardCollection = ({ NFTData }) => {
 	}
 
 	const displayData = NFTData && NFTData.length > 0 ? NFTData : realNFTs;
-	
-	const isRealNFTData = displayData.length > 0 && displayData[0] && 
+
+	const isRealNFTData = displayData.length > 0 && displayData[0] &&
 		typeof displayData[0] === 'object' && displayData[0].hasOwnProperty('name');
 
 	if (loading) {
@@ -157,13 +158,26 @@ const NFTCardCollection = ({ NFTData }) => {
 	return (
 		<div className={Style.NFTCardCollection}>
 			{displayData.map((el, i) => {
-					const baseImageUrl = isRealNFTData ? handleIPFSUrl(el.image) : el;
-					const nftName = isRealNFTData ? el.name : `Clone #${i + 1}`;
-					const nftPrice = isRealNFTData ? `${el.price} ETH` : '0.54 ETH';
-					const tokenId = isRealNFTData ? el.tokenId : i + 1;
-					const finalImageUrl = getImageSrc(baseImageUrl, tokenId);
-					
-					return (
+				const baseImageUrl = isRealNFTData ? handleIPFSUrl(el.image) : el;
+				const nftName = isRealNFTData ? el.name : `Clone #${i + 1}`;
+				const nftPrice = isRealNFTData ? `${el.price} ETH` : '0.54 ETH';
+				const tokenId = isRealNFTData ? el.tokenId : i + 1;
+				const finalImageUrl = getImageSrc(baseImageUrl, tokenId);
+
+				// Create URL with search parameters
+				const nftDetailsUrl = `/NFT-details?${new URLSearchParams({
+					tokenId: String(tokenId),
+					name: nftName,
+					price: isRealNFTData ? String(el.price) : '0.54',
+					image: finalImageUrl,
+					seller: isRealNFTData ? String(el.seller || '') : '',
+					owner: isRealNFTData ? String(el.owner || '') : '',
+					description: isRealNFTData ? String(el.description || '') : `This is Clone #${i + 1}`,
+					tokenUri: isRealNFTData ? String(el.tokenUri || '') : ''
+				}).toString()}`;
+
+			return (
+				<Link href={nftDetailsUrl} key={i}>
 						<div className={Style.NFTCardCollection_box} key={isRealNFTData ? `nft-${tokenId}` : `static-${i}`}>
 							<div className={Style.NFTCardCollection_box_like}>
 								<div className={Style.NFTCardCollection_box_like_box}>
@@ -207,30 +221,31 @@ const NFTCardCollection = ({ NFTData }) => {
 									placeholder="blur"
 									blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
 								/>
-						</div>
+							</div>
 
-						<div className={Style.NFTCardCollection_box_info}>
-							<div className={Style.NFTCardCollection_box_info_left}>
-								<LikeProfile />
-								<p>{nftName}</p>
-								<small>{isRealNFTData ? `Token #${tokenId}` : `4${i + 2}`}</small>
+							<div className={Style.NFTCardCollection_box_info}>
+								<div className={Style.NFTCardCollection_box_info_left}>
+									<LikeProfile />
+									<p>{nftName}</p>
+									<small>{isRealNFTData ? `Token #${tokenId}` : `4${i + 2}`}</small>
+								</div>
+							</div>
+
+							<div className={Style.NFTCardCollection_box_price}>
+								<div className={Style.NFTCardCollection_box_price_box}>
+									<small>Current Price</small>
+									<p>{nftPrice}</p>
+								</div>
+								<p className={Style.NFTCardCollection_box_price_stock}>
+									<MdTimer />
+									<span>{isRealNFTData ? 'Available' : `${i + 1} hours left`}</span>
+								</p>
 							</div>
 						</div>
-
-						<div className={Style.NFTCardCollection_box_price}>
-							<div className={Style.NFTCardCollection_box_price_box}>
-								<small>Current Price</small>
-								<p>{nftPrice}</p>
-							</div>
-							<p className={Style.NFTCardCollection_box_price_stock}>
-								<MdTimer />
-								<span>{isRealNFTData ? 'Available' : `${i + 1} hours left`}</span>
-							</p>
-						</div>
-					</div>
+					</Link>
 				)
 			})}
-			
+
 			{!NFTData && realNFTs.length > 0 && (
 				<div style={{ padding: '20px', textAlign: 'center', width: '100%' }}>
 					<p>✅ Showing {realNFTs.length} NFTs from marketplace</p>

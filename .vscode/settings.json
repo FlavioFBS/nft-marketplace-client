@@ -3,5 +3,6 @@
     "wake.compiler.solc.remappings": [
         "@openzeppelin/=node_modules/@openzeppelin/",
         "hardhat/=node_modules/hardhat/"
-    ]
+    ],
+    "inline-bookmarks.view.showVisibleFilesOnly": true
 }

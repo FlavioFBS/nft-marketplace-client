@@ -130,24 +130,26 @@ contract NFTMarketplace is ERC721URIStorage {
         uint256 price = idMarketItem[tokenId].price;
 
         require(
-            msg.value == price,
-            "Please submit the asking price in order to comple the purchase"
+            msg.value == price + listingPrice,
+            "Please submit the asking price plus marketplace fee to complete the purchase"
         );
 
+        // Store seller before clearing it
+        address payable seller = idMarketItem[tokenId].seller;
+
+        // Transfer ownership to buyer
         idMarketItem[tokenId].owner = payable(msg.sender);
         idMarketItem[tokenId].sold = true;
-        // creo que esto no va, porque al revender no coincidirá la condicion
-        idMarketItem[tokenId].owner = payable(address(0));
+        
+        // Clear seller since item is no longer for sale
+        idMarketItem[tokenId].seller = payable(address(0));
 
         _itemsSold.increment();
         _transfer(address(this), msg.sender, tokenId);
 
+        // Pay marketplace owner and seller
         payable(owner).transfer(listingPrice);
-        payable(idMarketItem[tokenId].seller).transfer(msg.value);
-
-        // creo que esto debe ir porque al comprar el NFT no tiene vendedor
-        // hasta que el nuevo dueño lo ponga en reventa
-        // idMarketItem[tokenId].seller = payable(address(0));
+        payable(seller).transfer(price);
     }
 
     // GETTING UNSOLD NFT DATA
@@ -159,7 +161,8 @@ contract NFTMarketplace is ERC721URIStorage {
         MarketItem[] memory items = new MarketItem[](unSoldItemsCount);
 
         for (uint256 i = 0; i < itemCount; i++) {
-            if (idMarketItem[i + 1].owner == address(this)) {
+            // Check if item is owned by contract AND not sold
+            if (idMarketItem[i + 1].owner == address(this) && !idMarketItem[i + 1].sold) {
                 uint256 currentId = i + 1;
 
                 MarketItem storage currentItem = idMarketItem[currentId];
@@ -201,15 +204,16 @@ contract NFTMarketplace is ERC721URIStorage {
         uint256 itemCount = 0;
         uint256 currentIndex = 0;
 
+        // Count items listed by user that are still for sale
         for (uint256 i = 0; i < totalCount; i++) {
-            if (idMarketItem[i + 1].seller == msg.sender) {
+            if (idMarketItem[i + 1].seller == msg.sender && !idMarketItem[i + 1].sold) {
                 itemCount += 1;
             }
         }
 
         MarketItem[] memory items = new MarketItem[](itemCount);
         for (uint256 j = 0; j < totalCount; j++) {
-            if (idMarketItem[j + 1].seller == msg.sender) {
+            if (idMarketItem[j + 1].seller == msg.sender && !idMarketItem[j + 1].sold) {
                 uint256 currentId = j + 1;
 
                 MarketItem storage currentItem = idMarketItem[currentId];

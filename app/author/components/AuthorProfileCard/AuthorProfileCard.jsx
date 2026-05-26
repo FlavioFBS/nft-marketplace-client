@@ -25,7 +25,7 @@ import Style from './AuthorProfileCard.module.css';
 import img from '@/img';
 import { Button } from '@/components/ComponentIndex';
 
-const AuthorProfileCard = () => {
+const AuthorProfileCard = ({currentAccount}) => {
   const [isClient, setIsClient] = useState(false);
   const [report, setReport] = useState(false);
   const [share, setShare] = useState(false);
@@ -70,7 +70,7 @@ const AuthorProfileCard = () => {
           <div className={Style.AuthorProfileCard_box_info_address}>
             {isClient && (
               <>
-                <input type="text" onChange={(e) => {}} value={'0x0000000000000000000000000000000000000000'} id='myInput' />
+                <input type="text" onChange={(e) => {}} value={currentAccount} id='myInput' />
                 <FiCopy onClick={copyAddress} className={Style.AuthorProfileCard_box_info_address_icon} />
               </>
             )}

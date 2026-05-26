@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
+import { useRouter } from 'next/navigation';
 import { useAccount, WagmiProvider, createConfig, http, useWalletClient, useConnect, useSwitchChain } from 'wagmi';
 import { metaMask } from 'wagmi/connectors'
 export const NFTMarketplaceContext = React.createContext();
@@ -39,6 +40,8 @@ function MarketplaceContent({ children }) {
   const { data: walletClient } = useWalletClient();
   const { connect } = useConnect();
   const { switchChain } = useSwitchChain();
+  const router = useRouter();
+  
 
   const pinataApiKey = process.env.NEXT_PUBLIC_PINATA_API_KEY;
   const pinataSecretKey = process.env.NEXT_PUBLIC_PINATA_SECRET_API_KEY;
@@ -543,15 +546,69 @@ function MarketplaceContent({ children }) {
     try {
       const contract = await connectToContract();
       const price = ethers.parseUnits(nft.price.toString(), 'ether');
-      console.log('💰 Buying NFT:', { tokenId: nft.tokenId, price: price.toString() });
+      
+      // Get marketplace fee  
+      const listingPrice = await contract.getListingPrice();
+      
+      // Total amount = NFT price + marketplace fee
+      const totalAmount = price + listingPrice;
+      
+      console.log('💰 Buying NFT:', { 
+        tokenId: nft.tokenId, 
+        nftPrice: ethers.formatEther(price) + ' ETH',
+        marketplaceFee: ethers.formatEther(listingPrice) + ' ETH',
+        totalAmount: ethers.formatEther(totalAmount) + ' ETH'
+      });
 
-      const transaction = await contract.createMarketSale(nft.tokenId, { value: price });
+      const transaction = await contract.createMarketSale(nft.tokenId, { value: totalAmount });
       console.log('🔄 Transaction sent:', transaction.hash);
 
       await transaction.wait();
       console.log('✅ NFT purchased successfully');
+      router.push('/author');
     } catch (error) {
       console.error('❌ Error while buying NFT:', error);
+    }
+  }
+
+  const reSellNFT = async (nft, newPrice) => {
+    try {
+      console.log('🔄 Re-listing NFT for sale...', {
+        tokenId: nft.tokenId,
+        currentOwner: nft.owner,
+        newPrice: newPrice
+      });
+
+      if (!address || isDisconnected || !walletClient) {
+        throw new Error('Wallet not connected properly. Please connect your wallet and try again.');
+      }
+
+      const price = ethers.parseUnits(newPrice.toString(), 'ether');
+      const contract = await connectToContract();
+      
+      // Get marketplace fee for relisting
+      const listingPrice = await contract.getListingPrice();
+      
+      console.log('💸 Relisting details:', {
+        newPrice: ethers.formatEther(price) + ' ETH',
+        marketplaceFee: ethers.formatEther(listingPrice) + ' ETH'
+      });
+
+      // Call reSellToken function
+      const transaction = await contract.reSellToken(nft.tokenId, price, { 
+        value: listingPrice.toString() 
+      });
+      
+      console.log('🔄 Relisting transaction sent:', transaction.hash);
+      await transaction.wait();
+      
+      console.log('✅ NFT relisted successfully!');
+      router.push('/author');
+      
+      return transaction;
+    } catch (error) {
+      console.error('❌ Error relisting NFT:', error);
+      throw error;
     }
   }
 
@@ -573,6 +630,7 @@ function MarketplaceContent({ children }) {
       fetchNFTs,
       fetchMyNFTsOrListedNFTs,
       buyNFT,
+      reSellNFT,
     }}>
       {children}
     </NFTMarketplaceContext.Provider>

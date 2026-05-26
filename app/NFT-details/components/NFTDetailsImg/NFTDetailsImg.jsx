@@ -8,7 +8,7 @@ import { TiArrowSortedDown, TiArrowSortedUp } from "react-icons/ti";
 import Style from './NFTDetailsImg.module.css'
 import img from "@/img";
 
-const NFTDetailsImg = () => {
+const NFTDetailsImg = ({nftData}) => {
   const [showDescription, setShowDescription] = useState(true);
   const [showDetails, setShowDetails] = useState(true);
   const [like, setLike] = useState(false);
@@ -21,6 +21,8 @@ const NFTDetailsImg = () => {
   const handleLikeClick = () => {
     setLike(!like);
   };
+
+  console.log('NFTDetailsImg received nftData:', nftData);
 
 
   return (
@@ -41,7 +43,7 @@ const NFTDetailsImg = () => {
 
           <div className={Style.NFTDetailsImg_box_NFT_img}>
             <Image
-              src={img.nft_image_1}
+              src={nftData.image}
               className={Style.NFTDetailsImg_box_NFT_img_img}
               alt="NFT image"
               fill
@@ -65,7 +67,7 @@ const NFTDetailsImg = () => {
         </div>
         {showDescription && (
           <div className={Style.NFTDetailsImg_box_description_box}>
-            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Incidunt tempora odit animi necessitatibus exercitationem tenetur officiis, minus quia deserunt saepe amet nostrum ullam, fugiat eaque dolor unde totam, quas quis.</p>
+            <p>{nftData.description}</p>
           </div>
         )}
         <div className={Style.NFTDetailsImg_box_details} onClick={() => setShowDetails(!showDetails)}>
@@ -79,13 +81,13 @@ const NFTDetailsImg = () => {
           <div className={Style.NFTDetailsImg_box_details_box}>
             <small>2000 x 2000 px IMAGE (698KB)</small>
             <p>
-              <small>Contract Address</small>
+              <small>Contract Address: </small>
               <br />
-              0x0000000000000000000000000000000000000000
+              {nftData.seller}
             </p>
             <p>
-              <small>Token ID</small>
-              100300372864
+              <small>Token ID: </small>
+              {nftData.tokenId}
             </p>
           </div>
         )}
